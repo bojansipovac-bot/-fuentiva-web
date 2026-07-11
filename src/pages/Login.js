@@ -94,17 +94,28 @@ const css = `
 `;
 
 export default function Login() {
-  const [mode, setMode] = useState('login'); // login | forgot
+  const [mode, setMode] = useState('login'); // login | signup | forgot
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState(null);
   const [error, setError] = useState(null);
 
+  const resetFeedback = () => {
+    setError(null);
+    setMessage(null);
+  };
+
+  const switchMode = (newMode) => {
+    setMode(newMode);
+    resetFeedback();
+  };
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError(null);
+    resetFeedback();
 
     const { error } = await supabase.auth.signInWithPassword({ email, password });
 
@@ -116,11 +127,47 @@ export default function Login() {
     setLoading(false);
   };
 
+  const handleSignUp = async (e) => {
+    e.preventDefault();
+    resetFeedback();
+
+    if (password !== confirmPassword) {
+      setError('Passwords do not match.');
+      return;
+    }
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters.');
+      return;
+    }
+
+    setLoading(true);
+
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: `${window.location.origin}/dashboard`,
+      },
+    });
+
+    if (error) {
+      setError(error.message);
+    } else if (data?.user && data.user.identities && data.user.identities.length === 0) {
+      // Supabase returns an "existing user" shape with empty identities when the email is already registered
+      setError('An account with this email already exists. Try signing in instead.');
+    } else if (data?.session) {
+      // Email confirmation disabled in Supabase settings — user is signed in immediately
+      window.location.href = '/dashboard';
+    } else {
+      setMessage('Account created! Check your email to confirm your address before signing in.');
+    }
+    setLoading(false);
+  };
+
   const handleForgotPassword = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError(null);
-    setMessage(null);
+    resetFeedback();
 
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${window.location.origin}/reset-password`,
@@ -143,12 +190,13 @@ export default function Login() {
         <div className="auth-box">
           <a href="/" className="auth-logo">Fuen<span>tiva</span></a>
 
-          {mode === 'login' ? (
+          {mode === 'login' && (
             <>
               <div className="auth-title">Welcome back</div>
               <div className="auth-subtitle">Sign in to your coaching portal</div>
 
               {error && <div className="alert alert-error">{error}</div>}
+              {message && <div className="alert alert-success">{message}</div>}
 
               <form onSubmit={handleLogin}>
                 <div className="form-group">
@@ -167,7 +215,7 @@ export default function Login() {
                 </div>
                 <button
                   type="button" className="auth-forgot"
-                  onClick={() => { setMode('forgot'); setError(null); }}
+                  onClick={() => switchMode('forgot')}
                   style={{background:'none', border:'none', cursor:'pointer', display:'block', width:'100%', textAlign:'right', color:'var(--muted)', fontSize:'12px', marginBottom:'20px', marginTop:'-8px'}}
                 >
                   Forgot password?
@@ -176,8 +224,59 @@ export default function Login() {
                   {loading ? 'Signing in...' : 'Sign In'}
                 </button>
               </form>
+
+              <hr className="auth-divider" />
+              <div className="auth-switch">
+                Don't have an account?
+                <button onClick={() => switchMode('signup')}>Sign up</button>
+              </div>
             </>
-          ) : (
+          )}
+
+          {mode === 'signup' && (
+            <>
+              <div className="auth-title">Create account</div>
+              <div className="auth-subtitle">Get started with your coaching portal</div>
+
+              {error && <div className="alert alert-error">{error}</div>}
+              {message && <div className="alert alert-success">{message}</div>}
+
+              <form onSubmit={handleSignUp}>
+                <div className="form-group">
+                  <label className="form-label">Email</label>
+                  <input
+                    type="email" className="form-input" placeholder="your@email.com"
+                    value={email} onChange={e => setEmail(e.target.value)} required
+                  />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Password</label>
+                  <input
+                    type="password" className="form-input" placeholder="••••••••"
+                    value={password} onChange={e => setPassword(e.target.value)} required
+                  />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Confirm Password</label>
+                  <input
+                    type="password" className="form-input" placeholder="••••••••"
+                    value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} required
+                  />
+                </div>
+                <button type="submit" className="btn-submit" disabled={loading}>
+                  {loading ? 'Creating account...' : 'Create Account'}
+                </button>
+              </form>
+
+              <hr className="auth-divider" />
+              <div className="auth-switch">
+                Already have an account?
+                <button onClick={() => switchMode('login')}>Sign in</button>
+              </div>
+            </>
+          )}
+
+          {mode === 'forgot' && (
             <>
               <div className="auth-title">Reset password</div>
               <div className="auth-subtitle">Enter your email and we'll send you a reset link</div>
@@ -201,9 +300,7 @@ export default function Login() {
               <hr className="auth-divider" />
               <div className="auth-switch">
                 Remember your password?
-                <button onClick={() => { setMode('login'); setError(null); setMessage(null); }}>
-                  Sign in
-                </button>
+                <button onClick={() => switchMode('login')}>Sign in</button>
               </div>
             </>
           )}
