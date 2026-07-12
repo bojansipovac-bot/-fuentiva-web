@@ -70,6 +70,7 @@ const css = `
 
 export default function Dashboard() {
   const [user, setUser] = useState(null);
+  const [checkingOnboarding, setCheckingOnboarding] = useState(true);
   const [activeTab, setActiveTab] = useState('home');
   const [profile, setProfile] = useState({ ime: '', kompanija: '', pozicija: '', cilj: '', nivo: '' });
   const [saving, setSaving] = useState(false);
@@ -77,20 +78,30 @@ export default function Dashboard() {
   const [saveErr, setSaveErr] = useState(null);
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => {
+    supabase.auth.getUser().then(async ({ data }) => {
       if (!data.user) {
         window.location.href = '/login';
-      } else {
-        setUser(data.user);
-        loadProfile(data.user.id);
+        return;
       }
+
+      setUser(data.user);
+
+      const { data: profileData } = await supabase
+        .from('profili')
+        .select('*')
+        .eq('user_id', data.user.id)
+        .single();
+
+      // No profile row yet, or onboarding not finished -> send to the onboarding wizard
+      if (!profileData || profileData.onboarding_completed !== true) {
+        window.location.href = '/onboarding';
+        return;
+      }
+
+      setProfile(profileData);
+      setCheckingOnboarding(false);
     });
   }, []);
-
-  const loadProfile = async (userId) => {
-const { data } = await supabase.from('profili').select('*').eq('user_id', userId).single();
-    if (data) setProfile(data);
-  };
 
   const saveProfile = async () => {
     setSaving(true);
@@ -116,7 +127,7 @@ const { data } = await supabase.from('profili').select('*').eq('user_id', userId
     window.location.href = '/';
   };
 
-  if (!user) return null;
+  if (!user || checkingOnboarding) return null;
 
   return (
     <>
