@@ -87,6 +87,8 @@ const splitPhone = (fullPhone) => {
   return { dialCode: '+381', phoneNumber: fullPhone.replace(/^\+/, '') };
 };
 
+const RAILWAY_URL = 'https://procurement-coach-production.up.railway.app';
+
 export default function Dashboard() {
   const [user, setUser] = useState(null);
   const [checkingOnboarding, setCheckingOnboarding] = useState(true);
@@ -95,11 +97,47 @@ export default function Dashboard() {
   const [dialCode, setDialCode] = useState('+381');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [sessionNotes, setSessionNotes] = useState([]);
+  const [paymentMessage, setPaymentMessage] = useState(null);
+  const [checkoutLoading, setCheckoutLoading] = useState(null);
 
   const cleanLocalNumber = (value) => value.replace(/[\s\-()]/g, '').replace(/^0+/, '');
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState(null);
   const [saveErr, setSaveErr] = useState(null);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const payment = params.get('payment');
+    if (payment === 'success') {
+      setPaymentMessage({ type: 'success', text: 'Payment successful — thank you!' });
+    } else if (payment === 'cancelled') {
+      setPaymentMessage({ type: 'error', text: 'Payment was cancelled — no charge was made.' });
+    }
+    if (payment) {
+      window.history.replaceState({}, '', '/dashboard');
+    }
+  }, []);
+
+  const startCheckout = async (product) => {
+    setCheckoutLoading(product);
+    try {
+      const res = await fetch(`${RAILWAY_URL}/create-checkout-session`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user_id: user.id, product }),
+      });
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        setPaymentMessage({ type: 'error', text: 'Could not start checkout. Please try again.' });
+        setCheckoutLoading(null);
+      }
+    } catch (e) {
+      setPaymentMessage({ type: 'error', text: 'Could not start checkout. Please try again.' });
+      setCheckoutLoading(null);
+    }
+  };
 
   useEffect(() => {
     supabase.auth.getUser().then(async ({ data }) => {
@@ -213,6 +251,12 @@ export default function Dashboard() {
 
         <div className="main">
 
+          {paymentMessage && (
+            <div className={paymentMessage.type === 'success' ? 'alert-success' : 'alert-error'} style={{ maxWidth: 560 }}>
+              {paymentMessage.text}
+            </div>
+          )}
+
           {activeTab === 'home' && (
             <>
               <div className="page-title">Welcome back{profile.ime ? `, ${profile.ime}` : ''}!</div>
@@ -242,25 +286,57 @@ export default function Dashboard() {
           {activeTab === 'ai' && (
             <>
               <div className="page-title">AI Coaching</div>
-              <div className="page-subtitle">Continue your coaching conversation via WhatsApp.</div>
-              <div className="card" style={{maxWidth: 560}}>
-                <div className="card-icon">📱</div>
-                <div className="card-title">Connect on WhatsApp</div>
-                <div className="card-desc">Your AI coaching session happens on WhatsApp — send text or voice messages and get responses in Bojan's voice.</div>
-                <a href="https://wa.me/16592712148" target="_blank" rel="noreferrer" className="btn-card">Open WhatsApp →</a>
-              </div>
+              {profile.subscription_status === 'active' ? (
+                <>
+                  <div className="page-subtitle">Continue your coaching conversation via WhatsApp.</div>
+                  <div className="card" style={{maxWidth: 560}}>
+                    <div className="card-icon">📱</div>
+                    <div className="card-title">Connect on WhatsApp</div>
+                    <div className="card-desc">Your AI coaching session happens on WhatsApp — send text or voice messages and get responses in Bojan's voice.</div>
+                    <a href="https://wa.me/16592712148" target="_blank" rel="noreferrer" className="btn-card">Open WhatsApp →</a>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="page-subtitle">Subscribe for unlimited access to your AI procurement coach.</div>
+                  <div className="card featured" style={{maxWidth: 560}}>
+                    <div className="card-badge">24/7 Available</div>
+                    <div className="card-icon">🤖</div>
+                    <div className="card-title">Fuentiva Coaching — 99€/month</div>
+                    <div className="card-desc">Unlimited text & voice coaching via WhatsApp, personalized to your industry and goals.</div>
+                    <button className="btn-card" onClick={() => startCheckout('monthly')} disabled={checkoutLoading === 'monthly'}>
+                      {checkoutLoading === 'monthly' ? 'Redirecting…' : 'Subscribe →'}
+                    </button>
+                  </div>
+                </>
+              )}
             </>
           )}
 
           {activeTab === 'live' && (
             <>
               <div className="page-title">Quick Win Session</div>
-              <div className="page-subtitle">Book a live 15–30 min session directly with Bojan.</div>
-              <div className="card" style={{maxWidth: 560}}>
-                <div className="card-icon">⚡</div>
-                <div className="card-title">Book Your Session</div>
-                <div className="card-desc">Quick Win sessions are for when you need a fast, expert answer to a specific procurement challenge. Premium rate applies — minimum 15 minutes.</div>
-                <a href="mailto:bojan.sipovac@gmail.com?subject=Quick Win Session Request" className="btn-card">Request Session →</a>
+              <div className="page-subtitle">Book a live session directly with Bojan — pick a duration.</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', maxWidth: 560 }}>
+                {[
+                  { product: 'quickwin_15', label: '15 min', price: '25€' },
+                  { product: 'quickwin_20', label: '20 min', price: '28€' },
+                  { product: 'quickwin_25', label: '25 min', price: '31€' },
+                  { product: 'quickwin_30', label: '30 min', price: '34€' },
+                ].map(opt => (
+                  <div key={opt.product} className="card" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'default' }}>
+                    <div>
+                      <div className="card-title" style={{ marginBottom: 0 }}>{opt.label}</div>
+                      <div className="card-desc" style={{ marginBottom: 0 }}>Live 1:1 with Bojan</div>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                      <div style={{ fontSize: '20px', fontWeight: 700, fontFamily: "'Space Grotesk', sans-serif" }}>{opt.price}</div>
+                      <button className="btn-card" onClick={() => startCheckout(opt.product)} disabled={checkoutLoading === opt.product}>
+                        {checkoutLoading === opt.product ? 'Redirecting…' : 'Book →'}
+                      </button>
+                    </div>
+                  </div>
+                ))}
               </div>
             </>
           )}
