@@ -126,6 +126,18 @@ const EXPECTATIONS = [
   'AI tools & automation', 'Process design', 'Other'
 ];
 
+const DIAL_CODES = [
+  { code: '+381', label: 'Serbia (+381)' },
+  { code: '+382', label: 'Montenegro (+382)' },
+  { code: '+385', label: 'Croatia (+385)' },
+  { code: '+387', label: 'Bosnia and Herzegovina (+387)' },
+  { code: '+389', label: 'North Macedonia (+389)' },
+  { code: '+386', label: 'Slovenia (+386)' },
+  { code: '+34', label: 'Spain (+34)' },
+  { code: '+49', label: 'Germany (+49)' },
+  { code: '+43', label: 'Austria (+43)' },
+];
+
 export default function Onboarding() {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -136,6 +148,10 @@ export default function Onboarding() {
   const [education, setEducation] = useState('');
   const [position, setPosition] = useState('');
   const [positionOther, setPositionOther] = useState('');
+  const [dialCode, setDialCode] = useState('+381');
+  const [phoneNumber, setPhoneNumber] = useState('');
+
+  const cleanLocalNumber = (value) => value.replace(/[\s\-()]/g, '').replace(/^0+/, '');
 
   const [painPoints, setPainPoints] = useState([]);
   const [painPointOther, setPainPointOther] = useState('');
@@ -176,6 +192,7 @@ export default function Onboarding() {
       country: country || null,
       education: education || null,
       position: position === 'Other' ? (positionOther || 'Other') : (position || null),
+      telefon: phoneNumber ? `${dialCode}${cleanLocalNumber(phoneNumber)}` : null,
       pain_points: painPoints.includes('Other') && painPointOther
         ? [...painPoints.filter(p => p !== 'Other'), painPointOther]
         : painPoints,
@@ -272,6 +289,25 @@ export default function Onboarding() {
                 )}
               </div>
 
+              <div className="form-group">
+                <label className="form-label">Phone (WhatsApp)</label>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <select className="form-select" style={{ flex: '0 0 150px' }}
+                    value={dialCode} onChange={e => setDialCode(e.target.value)}>
+                    {DIAL_CODES.map(d => <option key={d.code} value={d.code}>{d.label}</option>)}
+                  </select>
+                  <input
+                    type="tel" className="form-input" placeholder="63 230 395"
+                    value={phoneNumber}
+                    onChange={e => setPhoneNumber(e.target.value)}
+                    onBlur={e => setPhoneNumber(cleanLocalNumber(e.target.value))}
+                  />
+                </div>
+                <div style={{ fontSize: '11px', color: 'var(--muted)', marginTop: '6px' }}>
+                  Don't type the leading 0 — just the number after it (e.g. for 064 987 6532, type 64 987 6532).
+                </div>
+              </div>
+
               <button className="btn-primary" onClick={goNext}>Continue</button>
               <button className="ob-skip" onClick={handleSkip}>Skip for now</button>
             </>
@@ -356,6 +392,10 @@ export default function Onboarding() {
                 <div className="review-item">
                   <span className="review-label">Position</span>
                   <span className="review-value">{position === 'Other' ? (positionOther || 'Other') : (position || '—')}</span>
+                </div>
+                <div className="review-item">
+                  <span className="review-label">Phone</span>
+                  <span className="review-value">{phoneNumber ? `${dialCode}${cleanLocalNumber(phoneNumber)}` : '—'}</span>
                 </div>
                 <div className="review-item">
                   <span className="review-label">Pain points</span>

@@ -68,11 +68,35 @@ const css = `
   .alert-error { background: rgba(255,50,50,0.08); border: 1px solid rgba(255,50,50,0.3); color: #FF6B6B; padding: 12px 16px; font-size: 13px; margin-bottom: 24px; }
 `;
 
+const DIAL_CODES = [
+  { code: '+381', label: 'Serbia (+381)' },
+  { code: '+382', label: 'Montenegro (+382)' },
+  { code: '+385', label: 'Croatia (+385)' },
+  { code: '+387', label: 'Bosnia and Herzegovina (+387)' },
+  { code: '+389', label: 'North Macedonia (+389)' },
+  { code: '+386', label: 'Slovenia (+386)' },
+  { code: '+34', label: 'Spain (+34)' },
+  { code: '+49', label: 'Germany (+49)' },
+  { code: '+43', label: 'Austria (+43)' },
+];
+
+const splitPhone = (fullPhone) => {
+  if (!fullPhone) return { dialCode: '+381', phoneNumber: '' };
+  const match = DIAL_CODES.find(d => fullPhone.startsWith(d.code));
+  if (match) return { dialCode: match.code, phoneNumber: fullPhone.slice(match.code.length) };
+  return { dialCode: '+381', phoneNumber: fullPhone.replace(/^\+/, '') };
+};
+
 export default function Dashboard() {
   const [user, setUser] = useState(null);
   const [checkingOnboarding, setCheckingOnboarding] = useState(true);
   const [activeTab, setActiveTab] = useState('home');
   const [profile, setProfile] = useState({ ime: '', kompanija: '', pozicija: '', cilj: '', nivo: '' });
+  const [dialCode, setDialCode] = useState('+381');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [sessionNotes, setSessionNotes] = useState([]);
+
+  const cleanLocalNumber = (value) => value.replace(/[\s\-()]/g, '').replace(/^0+/, '');
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState(null);
   const [saveErr, setSaveErr] = useState(null);
@@ -99,6 +123,9 @@ export default function Dashboard() {
       }
 
       setProfile(profileData);
+      const { dialCode: loadedDialCode, phoneNumber: loadedPhoneNumber } = splitPhone(profileData.telefon);
+      setDialCode(loadedDialCode);
+      setPhoneNumber(loadedPhoneNumber);
       setCheckingOnboarding(false);
     });
   }, []);
@@ -108,14 +135,19 @@ export default function Dashboard() {
     setSaveMsg(null);
     setSaveErr(null);
 
+    const dataToSave = {
+      ...profile,
+      telefon: phoneNumber ? `${dialCode}${cleanLocalNumber(phoneNumber)}` : null,
+    };
+
     const { data: existing } = await supabase.from('profili').select('id').eq('user_id', user.id).single();
 
     if (existing) {
-      const { error } = await supabase.from('profili').update({ ...profile }).eq('user_id', user.id);
+      const { error } = await supabase.from('profili').update(dataToSave).eq('user_id', user.id);
       if (error) setSaveErr('Error saving profile.');
       else setSaveMsg('Profile saved!');
     } else {
-      const { error } = await supabase.from('profili').insert({ ...profile, user_id: user.id });
+      const { error } = await supabase.from('profili').insert({ ...dataToSave, user_id: user.id });
       if (error) setSaveErr('Error saving profile.');
       else setSaveMsg('Profile saved!');
     }
@@ -125,6 +157,23 @@ export default function Dashboard() {
   const handleLogout = async () => {
     await supabase.auth.signOut();
     window.location.href = '/';
+  };
+
+  const loadSessionNotes = async () => {
+    const { data, error } = await supabase
+      .from('session_notes')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('session_date', { ascending: false });
+    console.log('session_notes query -> user.id:', user.id, 'data:', data, 'error:', error);
+    setSessionNotes(data || []);
+  };
+
+  const handleTabClick = (tab) => {
+    setActiveTab(tab);
+    if (tab === 'history') {
+      loadSessionNotes();
+    }
   };
 
   if (!user || checkingOnboarding) return null;
@@ -150,7 +199,7 @@ export default function Dashboard() {
             <div className={`nav-item ${activeTab === 'live' ? 'active' : ''}`} onClick={() => setActiveTab('live')}>
               <span className="nav-item-icon">⚡</span> Quick Win
             </div>
-            <div className={`nav-item ${activeTab === 'history' ? 'active' : ''}`} onClick={() => setActiveTab('history')}>
+            <div className={`nav-item ${activeTab === 'history' ? 'active' : ''}`} onClick={() => handleTabClick('history')}>
               <span className="nav-item-icon">📋</span> Session History
             </div>
             <div className={`nav-item ${activeTab === 'profile' ? 'active' : ''}`} onClick={() => setActiveTab('profile')}>
@@ -220,7 +269,23 @@ export default function Dashboard() {
             <>
               <div className="page-title">Session History</div>
               <div className="page-subtitle">Your past coaching sessions.</div>
-              <div className="empty-state">Your session history will appear here once you complete your first session.</div>
+              {sessionNotes.length === 0 ? (
+                <div className="empty-state">Your session history will appear here once you complete your first session.</div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', maxWidth: 700 }}>
+                  {sessionNotes.map(note => (
+                    <div key={note.id} className="card" style={{ cursor: 'default' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
+                        <span style={{ fontSize: '13px', color: 'var(--muted)' }}>{note.session_date}</span>
+                        {note.session_type && (
+                          <span style={{ fontSize: '11px', color: 'var(--orange)', textTransform: 'uppercase', letterSpacing: '1px' }}>{note.session_type}</span>
+                        )}
+                      </div>
+                      <div style={{ fontSize: '14px', color: 'var(--light)', lineHeight: '1.6', whiteSpace: 'pre-wrap' }}>{note.note}</div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </>
           )}
 
@@ -244,6 +309,24 @@ export default function Dashboard() {
                 <div className="form-group">
                   <label className="form-label">Position</label>
                   <input className="form-input" placeholder="Procurement Manager" value={profile.pozicija || ''} onChange={e => setProfile({...profile, pozicija: e.target.value})} />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Phone (WhatsApp)</label>
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    <select className="form-input" style={{ flex: '0 0 190px' }}
+                      value={dialCode} onChange={e => setDialCode(e.target.value)}>
+                      {DIAL_CODES.map(d => <option key={d.code} value={d.code}>{d.label}</option>)}
+                    </select>
+                    <input
+                      className="form-input" type="tel" placeholder="63 230 395"
+                      value={phoneNumber}
+                      onChange={e => setPhoneNumber(e.target.value)}
+                      onBlur={e => setPhoneNumber(cleanLocalNumber(e.target.value))}
+                    />
+                  </div>
+                  <div style={{ fontSize: '11px', color: 'var(--muted)', marginTop: '6px' }}>
+                    Don't type the leading 0 — just the number after it (e.g. for 064 987 6532, type 64 987 6532).
+                  </div>
                 </div>
                 <div className="form-group">
                   <label className="form-label">Coaching Goal</label>
