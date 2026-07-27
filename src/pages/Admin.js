@@ -79,6 +79,39 @@ const css = `
   .payment-amount { color: var(--white); font-weight: 600; }
 
   .empty-note { font-size: 13px; color: var(--muted); }
+
+  .report-bar { display: flex; align-items: flex-end; gap: 14px; margin-bottom: 32px; }
+  .report-field label { font-size: 11px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 6px; }
+  .report-field input { background: var(--gray1); border: 1px solid var(--gray2); color: var(--white); font-size: 13px; padding: 9px 12px; font-family: 'Inter', sans-serif; }
+  .btn-report { background: var(--orange); color: #fff; font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 600; padding: 10px 18px; border: none; cursor: pointer; }
+  .btn-report:hover { background: var(--orange2); }
+
+  .report-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+    display: flex; align-items: center; justify-content: center; z-index: 200; padding: 24px;
+  }
+  .report-box {
+    width: 100%; max-width: 800px; max-height: 88vh; overflow-y: auto;
+    background: #ffffff; color: #111111; padding: 40px;
+  }
+  .report-box h1 { font-family: 'Space Grotesk', sans-serif; font-size: 22px; margin-bottom: 4px; }
+  .report-box .report-range { font-size: 13px; color: #555; margin-bottom: 24px; }
+  .report-box h2 { font-family: 'Space Grotesk', sans-serif; font-size: 15px; margin: 24px 0 10px; }
+  .report-table { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
+  .report-table th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #777; padding: 8px 10px; border-bottom: 1px solid #ddd; }
+  .report-table td { font-size: 13px; padding: 8px 10px; border-bottom: 1px solid #eee; color: #222; }
+  .report-total { font-weight: 700; }
+  .report-actions { display: flex; gap: 10px; margin-top: 28px; }
+  .report-actions button { font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 600; padding: 10px 18px; border: none; cursor: pointer; }
+  .btn-print { background: #FF5500; color: #fff; }
+  .btn-print-close { background: #eee; color: #222; }
+
+  @media print {
+    .no-print { display: none !important; }
+    .report-overlay { position: static; background: none; padding: 0; }
+    .report-box { max-height: none; overflow: visible; box-shadow: none; max-width: 100%; }
+    .report-actions { display: none !important; }
+  }
 `;
 
 export default function Admin() {
@@ -93,6 +126,9 @@ export default function Admin() {
   const [sessionNotes, setSessionNotes] = useState([]);
   const [emails, setEmails] = useState({});
   const [selectedUserId, setSelectedUserId] = useState(null);
+  const [reportFrom, setReportFrom] = useState('');
+  const [reportTo, setReportTo] = useState('');
+  const [reportOpen, setReportOpen] = useState(false);
 
   const checkPin = async (e) => {
     e.preventDefault();
@@ -201,6 +237,37 @@ export default function Admin() {
     };
   }).sort((a, b) => b.totalSpend - a.totalSpend);
 
+  // ---- Financial report: filter payments by date range, group by day and by user ----
+  const reportPayments = (reportFrom && reportTo)
+    ? payments.filter(p => {
+        if (!p.created_at) return false;
+        const d = p.created_at.slice(0, 10); // YYYY-MM-DD
+        return d >= reportFrom && d <= reportTo;
+      })
+    : [];
+
+  const byDay = {};
+  reportPayments.forEach(p => {
+    const day = p.created_at.slice(0, 10);
+    byDay[day] = (byDay[day] || 0) + (Number(p.amount_eur) || 0);
+  });
+  const byDayRows = Object.entries(byDay).sort((a, b) => a[0].localeCompare(b[0]));
+
+  const byUser = {};
+  reportPayments.forEach(p => {
+    const key = p.user_id;
+    if (!byUser[key]) byUser[key] = { total: 0, count: 0 };
+    byUser[key].total += Number(p.amount_eur) || 0;
+    byUser[key].count += 1;
+  });
+  const byUserRows = Object.entries(byUser).map(([uid, v]) => {
+    const profile = profiles.find(p => p.user_id === uid);
+    const name = (profile && profile.ime) || emails[uid] || uid;
+    return { uid, name, ...v };
+  }).sort((a, b) => b.total - a.total);
+
+  const reportGrandTotal = reportPayments.reduce((sum, p) => sum + (Number(p.amount_eur) || 0), 0);
+
   const statusClass = (status) => {
     if (status === 'active') return 'status-active';
     if (status === 'inactive' || !status) return 'status-inactive';
@@ -233,7 +300,7 @@ export default function Admin() {
   return (
     <>
       <style>{css}</style>
-      <div className="admin-page">
+      <div className="admin-page no-print">
         <div className="admin-title">Admin Overview</div>
         <div className="admin-subtitle">
           {loadingData ? 'Loading data…' : `Platform usage as of ${now.toLocaleDateString()}`}
@@ -264,6 +331,25 @@ export default function Admin() {
           {topPains.map(([pain, count]) => (
             <div key={pain} className="pain-chip"><b>{count}×</b> &nbsp;{pain}</div>
           ))}
+        </div>
+
+        <div className="section-label">Financial Report</div>
+        <div className="report-bar">
+          <div className="report-field">
+            <label>From</label>
+            <input type="date" value={reportFrom} onChange={e => setReportFrom(e.target.value)} />
+          </div>
+          <div className="report-field">
+            <label>To</label>
+            <input type="date" value={reportTo} onChange={e => setReportTo(e.target.value)} />
+          </div>
+          <button
+            className="btn-report"
+            disabled={!reportFrom || !reportTo}
+            onClick={() => setReportOpen(true)}
+          >
+            Generate Report
+          </button>
         </div>
 
         <div className="section-label">Clients</div>
@@ -306,7 +392,7 @@ export default function Admin() {
         const displayName = (user && user.ime) || emails[selectedUserId] || 'Unknown client';
 
         return (
-          <div className="modal-overlay" onClick={() => setSelectedUserId(null)}>
+          <div className="modal-overlay no-print" onClick={() => setSelectedUserId(null)}>
             <div className="modal-box" onClick={e => e.stopPropagation()}>
               <div className="modal-header">
                 <div>
@@ -344,6 +430,60 @@ export default function Admin() {
           </div>
         );
       })()}
+
+      {reportOpen && (
+        <div className="report-overlay">
+          <div className="report-box">
+            <h1>Fuentiva Financial Report</h1>
+            <div className="report-range">{reportFrom} to {reportTo} · Generated {now.toLocaleDateString()}</div>
+
+            <h2>Revenue by Day</h2>
+            <table className="report-table">
+              <thead>
+                <tr><th>Date</th><th>Revenue</th></tr>
+              </thead>
+              <tbody>
+                {byDayRows.length === 0 && (
+                  <tr><td colSpan="2">No payments in this range.</td></tr>
+                )}
+                {byDayRows.map(([day, total]) => (
+                  <tr key={day}><td>{day}</td><td>€{total.toFixed(0)}</td></tr>
+                ))}
+              </tbody>
+            </table>
+
+            <h2>Revenue by Client</h2>
+            <table className="report-table">
+              <thead>
+                <tr><th>Client</th><th>Payments</th><th>Total</th></tr>
+              </thead>
+              <tbody>
+                {byUserRows.length === 0 && (
+                  <tr><td colSpan="3">No payments in this range.</td></tr>
+                )}
+                {byUserRows.map(row => (
+                  <tr key={row.uid}><td>{row.name}</td><td>{row.count}</td><td>€{row.total.toFixed(0)}</td></tr>
+                ))}
+              </tbody>
+            </table>
+
+            <table className="report-table">
+              <tbody>
+                <tr>
+                  <td className="report-total">Grand Total</td>
+                  <td></td>
+                  <td className="report-total">€{reportGrandTotal.toFixed(0)}</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div className="report-actions">
+              <button className="btn-print" onClick={() => window.print()}>Print / Save as PDF</button>
+              <button className="btn-print-close" onClick={() => setReportOpen(false)}>Close</button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
