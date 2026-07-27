@@ -47,6 +47,38 @@ const css = `
   .status-active { background: rgba(74,222,128,0.12); color: #4ADE80; }
   .status-inactive { background: rgba(255,255,255,0.06); color: var(--muted); }
   .status-other { background: rgba(255,85,0,0.12); color: var(--orange); }
+
+  tr.client-row { cursor: pointer; }
+
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+    display: flex; align-items: center; justify-content: center; z-index: 100; padding: 24px;
+  }
+  .modal-box {
+    width: 100%; max-width: 720px; max-height: 85vh; overflow-y: auto;
+    background: var(--gray1); border: 1px solid var(--gray2); padding: 32px;
+  }
+  .modal-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
+  .modal-title { font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 700; }
+  .modal-subtitle { font-size: 13px; color: var(--muted); margin-top: 4px; }
+  .modal-close { background: none; border: none; color: var(--muted); font-size: 20px; cursor: pointer; padding: 0 4px; }
+  .modal-close:hover { color: var(--white); }
+
+  .modal-section-label { font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 600; margin: 24px 0 12px; }
+  .modal-section-label:first-of-type { margin-top: 0; }
+
+  .note-card { background: var(--black); border: 1px solid var(--gray2); padding: 16px 18px; margin-bottom: 10px; }
+  .note-card-header { display: flex; justify-content: space-between; margin-bottom: 8px; }
+  .note-date { font-size: 12px; color: var(--muted); }
+  .note-type { font-size: 10px; color: var(--orange); text-transform: uppercase; letter-spacing: 1px; }
+  .note-text { font-size: 13px; color: var(--light); line-height: 1.6; white-space: pre-wrap; }
+
+  .payment-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--gray2); font-size: 13px; }
+  .payment-row:last-child { border-bottom: none; }
+  .payment-type { color: var(--light); }
+  .payment-amount { color: var(--white); font-weight: 600; }
+
+  .empty-note { font-size: 13px; color: var(--muted); }
 `;
 
 export default function Admin() {
@@ -58,7 +90,9 @@ export default function Admin() {
   const [profiles, setProfiles] = useState([]);
   const [payments, setPayments] = useState([]);
   const [sesije, setSesije] = useState([]);
+  const [sessionNotes, setSessionNotes] = useState([]);
   const [emails, setEmails] = useState({});
+  const [selectedUserId, setSelectedUserId] = useState(null);
 
   const checkPin = async (e) => {
     e.preventDefault();
@@ -85,15 +119,17 @@ export default function Admin() {
 
   const loadData = async () => {
     setLoadingData(true);
-    const [profilesRes, paymentsRes, sesijeRes, emailsRes] = await Promise.all([
+    const [profilesRes, paymentsRes, sesijeRes, sessionNotesRes, emailsRes] = await Promise.all([
       supabase.from('profili').select('*'),
       supabase.from('payments').select('*'),
       supabase.from('sesije').select('*'),
+      supabase.from('session_notes').select('*'),
       fetch(`${RAILWAY_URL}/admin/user-emails`).then(r => r.json()).catch(() => ({ emails: {} })),
     ]);
     setProfiles(profilesRes.data || []);
     setPayments(paymentsRes.data || []);
     setSesije(sesijeRes.data || []);
+    setSessionNotes(sessionNotesRes.data || []);
     setEmails(emailsRes.emails || {});
     setLoadingData(false);
   };
@@ -245,7 +281,7 @@ export default function Admin() {
           </thead>
           <tbody>
             {userRows.map(row => (
-              <tr key={row.user_id}>
+              <tr key={row.user_id} className="client-row" onClick={() => setSelectedUserId(row.user_id)}>
                 <td>{row.ime}</td>
                 <td>{row.industry}</td>
                 <td><span className={`status-pill ${statusClass(row.subscription_status)}`}>{row.subscription_status}</span></td>
@@ -258,6 +294,56 @@ export default function Admin() {
           </tbody>
         </table>
       </div>
+
+      {selectedUserId && (() => {
+        const user = profiles.find(p => p.user_id === selectedUserId);
+        const userNotes = sessionNotes
+          .filter(n => n.user_id === selectedUserId)
+          .sort((a, b) => new Date(b.session_date) - new Date(a.session_date));
+        const userPayments = payments
+          .filter(p => p.user_id === selectedUserId)
+          .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        const displayName = (user && user.ime) || emails[selectedUserId] || 'Unknown client';
+
+        return (
+          <div className="modal-overlay" onClick={() => setSelectedUserId(null)}>
+            <div className="modal-box" onClick={e => e.stopPropagation()}>
+              <div className="modal-header">
+                <div>
+                  <div className="modal-title">{displayName}</div>
+                  <div className="modal-subtitle">
+                    {user ? user.industry || '—' : '—'} · {user ? (user.subscription_status || 'inactive') : '—'}
+                  </div>
+                </div>
+                <button className="modal-close" onClick={() => setSelectedUserId(null)}>✕</button>
+              </div>
+
+              <div className="modal-section-label">Session History</div>
+              {userNotes.length === 0 && <div className="empty-note">No session notes yet.</div>}
+              {userNotes.map(note => (
+                <div key={note.id} className="note-card">
+                  <div className="note-card-header">
+                    <span className="note-date">{note.session_date}</span>
+                    {note.session_type && <span className="note-type">{note.session_type}</span>}
+                  </div>
+                  <div className="note-text">{note.note}</div>
+                </div>
+              ))}
+
+              <div className="modal-section-label">Payment History</div>
+              {userPayments.length === 0 && <div className="empty-note">No payments yet.</div>}
+              {userPayments.map(p => (
+                <div key={p.id} className="payment-row">
+                  <span className="payment-type">
+                    {p.type} — {p.created_at ? new Date(p.created_at).toLocaleDateString() : '—'}
+                  </span>
+                  <span className="payment-amount">€{Number(p.amount_eur || 0).toFixed(0)}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      })()}
     </>
   );
 }
