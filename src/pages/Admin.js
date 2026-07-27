@@ -106,6 +106,11 @@ const css = `
   .btn-print { background: #FF5500; color: #fff; }
   .btn-print-close { background: #eee; color: #222; }
 
+  .report-logo { margin-bottom: 20px; }
+  .report-signature { margin-top: 48px; }
+  .report-signature-name { font-size: 14px; color: #111; margin-bottom: 44px; font-family: 'Space Grotesk', sans-serif; font-weight: 600; }
+  .report-signature-line { border-top: 1px solid #333; width: 260px; }
+
   @media print {
     .no-print { display: none !important; }
     .report-overlay { position: static; background: none; padding: 0; }
@@ -434,6 +439,20 @@ export default function Admin() {
       {reportOpen && (
         <div className="report-overlay">
           <div className="report-box">
+            <div className="report-logo">
+              <svg width="150" height="36" viewBox="0 0 260 60" xmlns="http://www.w3.org/2000/svg">
+                <line x1="5" y1="5" x2="65" y2="30" stroke="#444" strokeWidth="1.5" />
+                <line x1="5" y1="14" x2="65" y2="30" stroke="#444" strokeWidth="1.5" />
+                <line x1="5" y1="22" x2="65" y2="30" stroke="#444" strokeWidth="1.5" />
+                <line x1="5" y1="30" x2="65" y2="30" stroke="#444" strokeWidth="1.5" />
+                <line x1="5" y1="38" x2="65" y2="30" stroke="#444" strokeWidth="1.5" />
+                <line x1="5" y1="46" x2="65" y2="30" stroke="#444" strokeWidth="1.5" />
+                <line x1="5" y1="55" x2="65" y2="30" stroke="#444" strokeWidth="1.5" />
+                <circle cx="65" cy="30" r="5" fill="#FF5500" />
+                <text x="82" y="41" fontSize="32" fontWeight="700" fill="#111111" fontFamily="Arial, sans-serif">Fuen</text>
+                <text x="150" y="41" fontSize="32" fontWeight="700" fill="#FF5500" fontFamily="Arial, sans-serif">tiva</text>
+              </svg>
+            </div>
             <h1>Fuentiva Financial Report</h1>
             <div className="report-range">{reportFrom} to {reportTo} · Generated {now.toLocaleDateString()}</div>
 
@@ -476,6 +495,11 @@ export default function Admin() {
                 </tr>
               </tbody>
             </table>
+
+            <div className="report-signature">
+              <div className="report-signature-name">Bojan Sipovac</div>
+              <div className="report-signature-line"></div>
+            </div>
 
             <div className="report-actions">
               <button className="btn-print" onClick={() => window.print()}>Print / Save as PDF</button>
