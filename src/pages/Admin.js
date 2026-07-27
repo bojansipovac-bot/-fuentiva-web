@@ -287,6 +287,16 @@ export default function Admin() {
     return 'status-other';
   };
 
+  const formatDate = (dateInput) => {
+    if (!dateInput) return '—';
+    const d = new Date(dateInput);
+    if (isNaN(d.getTime())) return dateInput;
+    const dd = String(d.getDate()).padStart(2, '0');
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const yyyy = d.getFullYear();
+    return `${dd}.${mm}.${yyyy}`;
+  };
+
   if (!authenticated) {
     return (
       <>
@@ -316,7 +326,7 @@ export default function Admin() {
       <div className="admin-page no-print">
         <div className="admin-title">Admin Overview</div>
         <div className="admin-subtitle">
-          {loadingData ? 'Loading data…' : `Platform usage as of ${now.toLocaleDateString()}`}
+          {loadingData ? 'Loading data…' : `Platform usage as of ${formatDate(now)}`}
         </div>
 
         <div className="highlights-grid">
@@ -385,7 +395,7 @@ export default function Admin() {
                 <td>{row.industry}</td>
                 <td><span className={`status-pill ${statusClass(row.subscription_status)}`}>{row.subscription_status}</span></td>
                 <td>{row.messageCount}</td>
-                <td>{row.lastActivity ? new Date(row.lastActivity).toLocaleDateString() : '—'}</td>
+                <td>{row.lastActivity ? formatDate(row.lastActivity) : '—'}</td>
                 <td>€{row.totalSpend.toFixed(0)}</td>
                 <td>{row.paymentCount}</td>
               </tr>
@@ -422,7 +432,7 @@ export default function Admin() {
               {userNotes.map(note => (
                 <div key={note.id} className="note-card">
                   <div className="note-card-header">
-                    <span className="note-date">{note.session_date}</span>
+                    <span className="note-date">{formatDate(note.session_date)}</span>
                     {note.session_type && <span className="note-type">{note.session_type}</span>}
                   </div>
                   <div className="note-text">{note.note}</div>
@@ -434,7 +444,7 @@ export default function Admin() {
               {userPayments.map(p => (
                 <div key={p.id} className="payment-row">
                   <span className="payment-type">
-                    {p.type} — {p.created_at ? new Date(p.created_at).toLocaleDateString() : '—'}
+                    {p.type} — {p.created_at ? formatDate(p.created_at) : '—'}
                   </span>
                   <span className="payment-amount">€{Number(p.amount_eur || 0).toFixed(0)}</span>
                 </div>
@@ -462,7 +472,7 @@ export default function Admin() {
               </svg>
             </div>
             <h1>Fuentiva Financial Report</h1>
-            <div className="report-range">{reportFrom} to {reportTo} · Generated {now.toLocaleDateString()}</div>
+            <div className="report-range">{formatDate(reportFrom)} to {formatDate(reportTo)} · Generated {formatDate(now)}</div>
 
             <h2>Revenue by Day</h2>
             <table className="report-table">
@@ -474,7 +484,7 @@ export default function Admin() {
                   <tr><td colSpan="2">No payments in this range.</td></tr>
                 )}
                 {byDayRows.map(([day, total]) => (
-                  <tr key={day}><td>{day}</td><td>€{total.toFixed(0)}</td></tr>
+                  <tr key={day}><td>{formatDate(day)}</td><td>€{total.toFixed(0)}</td></tr>
                 ))}
               </tbody>
             </table>
