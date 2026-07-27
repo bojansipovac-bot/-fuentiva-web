@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabase';
 
 const RAILWAY_URL = 'https://procurement-coach-production.up.railway.app';
@@ -134,6 +134,14 @@ export default function Admin() {
   const [reportFrom, setReportFrom] = useState('');
   const [reportTo, setReportTo] = useState('');
   const [reportOpen, setReportOpen] = useState(false);
+
+  useEffect(() => {
+    if (reportOpen) {
+      document.title = 'Fuentiva Financial Report';
+    } else {
+      document.title = 'Fuentiva';
+    }
+  }, [reportOpen]);
 
   const checkPin = async (e) => {
     e.preventDefault();
