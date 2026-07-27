@@ -143,6 +143,7 @@ export default function Onboarding() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  const [fullName, setFullName] = useState('');
   const [industry, setIndustry] = useState('');
   const [country, setCountry] = useState('');
   const [education, setEducation] = useState('');
@@ -188,6 +189,7 @@ export default function Onboarding() {
 
     const payload = {
       user_id: user.id,
+      ime: fullName || null,
       industry: industry || null,
       country: country || null,
       education: education || null,
@@ -245,6 +247,14 @@ export default function Onboarding() {
               <button className="ob-back" onClick={goBack}>← Back</button>
               <div className="ob-title">About you</div>
               <div className="ob-subtitle">Pick what applies — takes a few taps.</div>
+
+              <div className="form-group">
+                <label className="form-label">Full Name</label>
+                <input
+                  type="text" className="form-input" placeholder="Your full name"
+                  value={fullName} onChange={e => setFullName(e.target.value)}
+                />
+              </div>
 
               <div className="form-group">
                 <label className="form-label">Industry</label>
@@ -377,6 +387,10 @@ export default function Onboarding() {
               <div className="ob-subtitle">Here's what we've got — hit Complete to enter your dashboard.</div>
 
               <div style={{ marginBottom: '20px' }}>
+                <div className="review-item">
+                  <span className="review-label">Name</span>
+                  <span className="review-value">{fullName || '—'}</span>
+                </div>
                 <div className="review-item">
                   <span className="review-label">Industry</span>
                   <span className="review-value">{industry || '—'}</span>
