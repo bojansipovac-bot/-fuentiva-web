@@ -58,6 +58,7 @@ export default function Admin() {
   const [profiles, setProfiles] = useState([]);
   const [payments, setPayments] = useState([]);
   const [sesije, setSesije] = useState([]);
+  const [emails, setEmails] = useState({});
 
   const checkPin = async (e) => {
     e.preventDefault();
@@ -84,14 +85,16 @@ export default function Admin() {
 
   const loadData = async () => {
     setLoadingData(true);
-    const [profilesRes, paymentsRes, sesijeRes] = await Promise.all([
+    const [profilesRes, paymentsRes, sesijeRes, emailsRes] = await Promise.all([
       supabase.from('profili').select('*'),
       supabase.from('payments').select('*'),
       supabase.from('sesije').select('*'),
+      fetch(`${RAILWAY_URL}/admin/user-emails`).then(r => r.json()).catch(() => ({ emails: {} })),
     ]);
     setProfiles(profilesRes.data || []);
     setPayments(paymentsRes.data || []);
     setSesije(sesijeRes.data || []);
+    setEmails(emailsRes.emails || {});
     setLoadingData(false);
   };
 
@@ -152,7 +155,7 @@ export default function Admin() {
     const spend = paymentsByUser[p.user_id] || { total: 0, count: 0 };
     return {
       user_id: p.user_id,
-      ime: p.ime || '—',
+      ime: p.ime || emails[p.user_id] || '—',
       industry: p.industry || '—',
       subscription_status: p.subscription_status || 'inactive',
       messageCount,
