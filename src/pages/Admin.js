@@ -135,6 +135,20 @@ export default function Admin() {
   const [reportTo, setReportTo] = useState('');
   const [reportOpen, setReportOpen] = useState(false);
 
+  // Parses "dd.mm.yyyy" typed by the user into an ISO "yyyy-mm-dd" string for filtering
+  const parseDDMMYYYY = (value) => {
+    if (!value) return null;
+    const match = value.trim().match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/);
+    if (!match) return null;
+    const [, dd, mm, yyyy] = match;
+    const d = parseInt(dd, 10), m = parseInt(mm, 10);
+    if (d < 1 || d > 31 || m < 1 || m > 12) return null;
+    return `${yyyy}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+  };
+
+  const reportFromISO = parseDDMMYYYY(reportFrom);
+  const reportToISO = parseDDMMYYYY(reportTo);
+
   useEffect(() => {
     if (reportOpen) {
       document.title = 'Fuentiva Financial Report';
@@ -251,11 +265,11 @@ export default function Admin() {
   }).sort((a, b) => b.totalSpend - a.totalSpend);
 
   // ---- Financial report: filter payments by date range, group by day and by user ----
-  const reportPayments = (reportFrom && reportTo)
+  const reportPayments = (reportFromISO && reportToISO)
     ? payments.filter(p => {
         if (!p.created_at) return false;
         const d = p.created_at.slice(0, 10); // YYYY-MM-DD
-        return d >= reportFrom && d <= reportTo;
+        return d >= reportFromISO && d <= reportToISO;
       })
     : [];
 
@@ -360,15 +374,15 @@ export default function Admin() {
         <div className="report-bar">
           <div className="report-field">
             <label>From</label>
-            <input type="date" value={reportFrom} onChange={e => setReportFrom(e.target.value)} />
+            <input type="text" placeholder="dd.mm.yyyy" value={reportFrom} onChange={e => setReportFrom(e.target.value)} />
           </div>
           <div className="report-field">
             <label>To</label>
-            <input type="date" value={reportTo} onChange={e => setReportTo(e.target.value)} />
+            <input type="text" placeholder="dd.mm.yyyy" value={reportTo} onChange={e => setReportTo(e.target.value)} />
           </div>
           <button
             className="btn-report"
-            disabled={!reportFrom || !reportTo}
+            disabled={!reportFromISO || !reportToISO}
             onClick={() => setReportOpen(true)}
           >
             Generate Report
@@ -472,7 +486,7 @@ export default function Admin() {
               </svg>
             </div>
             <h1>Fuentiva Financial Report</h1>
-            <div className="report-range">{formatDate(reportFrom)} to {formatDate(reportTo)} · Generated {formatDate(now)}</div>
+            <div className="report-range">{reportFrom} to {reportTo} · Generated {formatDate(now)}</div>
 
             <h2>Revenue by Day</h2>
             <table className="report-table">
