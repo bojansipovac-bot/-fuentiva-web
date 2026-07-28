@@ -89,6 +89,15 @@ const splitPhone = (fullPhone) => {
 
 const RAILWAY_URL = 'https://procurement-coach-production.up.railway.app';
 
+// Calendly booking pages for each Quick Win duration — client picks a slot here first,
+// then gets redirected back to the dashboard to complete payment via Stripe.
+const CALENDLY_URLS = {
+  quickwin_15: 'https://calendly.com/bojan-sipovac/quick-win-15-min',
+  quickwin_20: 'https://calendly.com/bojan-sipovac/quick-win-20min',
+  quickwin_25: 'https://calendly.com/bojan-sipovac/quick-win-25min',
+  quickwin_30: 'https://calendly.com/bojan-sipovac/30min',
+};
+
 export default function Dashboard() {
   const [user, setUser] = useState(null);
   const [checkingOnboarding, setCheckingOnboarding] = useState(true);
@@ -99,20 +108,29 @@ export default function Dashboard() {
   const [sessionNotes, setSessionNotes] = useState([]);
   const [paymentMessage, setPaymentMessage] = useState(null);
   const [checkoutLoading, setCheckoutLoading] = useState(null);
+  const [pendingProduct, setPendingProduct] = useState(null);
 
   const cleanLocalNumber = (value) => value.replace(/[\s\-()]/g, '').replace(/^0+/, '');
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState(null);
   const [saveErr, setSaveErr] = useState(null);
 
+  // Parse ?payment=... and ?product=... coming back from Stripe or Calendly
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const payment = params.get('payment');
+    const product = params.get('product');
+
     if (payment === 'success') {
       setPaymentMessage({ type: 'success', text: 'Payment successful — thank you!' });
     } else if (payment === 'cancelled') {
       setPaymentMessage({ type: 'error', text: 'Payment was cancelled — no charge was made.' });
+    } else if (payment === 'pending' && product) {
+      // Client just booked a Calendly slot — continue straight to payment for that slot
+      setPaymentMessage({ type: 'success', text: 'Time slot booked! Redirecting you to payment…' });
+      setPendingProduct(product);
     }
+
     if (payment) {
       window.history.replaceState({}, '', '/dashboard');
     }
@@ -124,7 +142,12 @@ export default function Dashboard() {
       const res = await fetch(`${RAILWAY_URL}/create-checkout-session`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ user_id: user.id, product }),
+        body: JSON.stringify({
+          user_id: user.id,
+          product,
+          email: user.email,
+          name: profile.ime || undefined,
+        }),
       });
       const data = await res.json();
       if (data.url) {
@@ -137,6 +160,27 @@ export default function Dashboard() {
       setPaymentMessage({ type: 'error', text: 'Could not start checkout. Please try again.' });
       setCheckoutLoading(null);
     }
+  };
+
+  // Once the user (and profile) are loaded, if a Calendly booking just completed,
+  // automatically continue to Stripe checkout for that product — no extra click.
+  useEffect(() => {
+    if (user && pendingProduct) {
+      const productToCheckout = pendingProduct;
+      setPendingProduct(null);
+      startCheckout(productToCheckout);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, pendingProduct]);
+
+  const goToCalendly = (product) => {
+    const url = CALENDLY_URLS[product];
+    const params = new URLSearchParams();
+    if (profile.ime) params.set('name', profile.ime);
+    if (user?.email) params.set('email', user.email);
+    // Passes booking details (start time, invitee, etc.) back to us via the redirect URL
+    params.set('a1', 'redirect');
+    window.location.href = `${url}?${params.toString()}`;
   };
 
   useEffect(() => {
@@ -203,7 +247,6 @@ export default function Dashboard() {
       .select('*')
       .eq('user_id', user.id)
       .order('session_date', { ascending: false });
-    console.log('session_notes query -> user.id:', user.id, 'data:', data, 'error:', error);
     setSessionNotes(data || []);
   };
 
@@ -316,7 +359,7 @@ export default function Dashboard() {
           {activeTab === 'live' && (
             <>
               <div className="page-title">Quick Win Session</div>
-              <div className="page-subtitle">Book a live session directly with Bojan — pick a duration.</div>
+              <div className="page-subtitle">Pick a duration, choose a time slot, then pay — in that order.</div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', maxWidth: 560 }}>
                 {[
                   { product: 'quickwin_15', label: '15 min', price: '25€' },
@@ -331,8 +374,8 @@ export default function Dashboard() {
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                       <div style={{ fontSize: '20px', fontWeight: 700, fontFamily: "'Space Grotesk', sans-serif" }}>{opt.price}</div>
-                      <button className="btn-card" onClick={() => startCheckout(opt.product)} disabled={checkoutLoading === opt.product}>
-                        {checkoutLoading === opt.product ? 'Redirecting…' : 'Book →'}
+                      <button className="btn-card" onClick={() => goToCalendly(opt.product)}>
+                        Choose time →
                       </button>
                     </div>
                   </div>
