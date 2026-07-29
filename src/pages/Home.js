@@ -143,6 +143,14 @@ const css = `
   .about-bio strong { color: var(--white); }
   .expertise-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 28px; }
   .tag { font-size: 11.5px; font-weight: 500; padding: 5px 12px; border: 1px solid var(--gray3); color: var(--muted); }
+
+  /* TIMELINE */
+  .timeline-section { padding: 0 48px 96px; }
+  .timeline-list { max-width: 780px; }
+  .timeline-item { display: flex; gap: 24px; margin-bottom: 30px; }
+  .timeline-year { font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 700; color: var(--orange); flex: 0 0 130px; padding-top: 2px; }
+  .timeline-text strong { font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 600; display: block; margin-bottom: 4px; color: var(--white); }
+  .timeline-text p { font-size: 13.5px; color: var(--muted); line-height: 1.65; }
  
   /* CTA */
   .cta-section { padding: 96px 48px; text-align: center; position: relative; overflow: hidden; }
@@ -366,6 +374,70 @@ export default function Home() {
             <span className="tag">Public Procurement</span>
             <span className="tag">Team Leadership</span>
             <span className="tag">AI Implementation</span>
+          </div>
+        </div>
+      </section>
+
+      {/* PROFESSIONAL TIMELINE */}
+      <section className="timeline-section">
+        <div className="section-eyebrow">Career Path</div>
+        <h2 className="section-title">26 years, built<br />step by step.</h2>
+        <div className="timeline-list">
+          <div className="timeline-item">
+            <div className="timeline-year">1998</div>
+            <div className="timeline-text">
+              <strong>Graduated as a Mechanical Engineer</strong>
+              <p>Built a career from there in sourcing, real estate, facility management, and car fleet — mostly within the telecom sector.</p>
+            </div>
+          </div>
+          <div className="timeline-item">
+            <div className="timeline-year">1999 – 2009</div>
+            <div className="timeline-text">
+              <strong>Telekom Srbija</strong>
+              <p>10 years at the state-owned operator, including hands-on experience in public procurement.</p>
+            </div>
+          </div>
+          <div className="timeline-item">
+            <div className="timeline-year">2010</div>
+            <div className="timeline-text">
+              <strong>Key Account Manager, start-up</strong>
+              <p>Led 5 major client engagements — direct experience in sales and account management.</p>
+            </div>
+          </div>
+          <div className="timeline-item">
+            <div className="timeline-year">2010 – 2012</div>
+            <div className="timeline-text">
+              <strong>Council of Europe</strong>
+              <p>Freelance engagement alongside corporate work.</p>
+            </div>
+          </div>
+          <div className="timeline-item">
+            <div className="timeline-year">2010 – Present</div>
+            <div className="timeline-text">
+              <strong>Yettel (formerly Telenor)</strong>
+              <p>Since 2014, part of the management team.</p>
+            </div>
+          </div>
+          <div className="timeline-item">
+            <div className="timeline-year">2011 – 2018</div>
+            <div className="timeline-text">
+              <strong>Global Sourcing Team, Telenor Group</strong>
+              <p>Representative for Telenor Serbia & Montenegro on the global sourcing team; contributed to establishing TPC (Telenor Procurement Company) in Singapore — direct experience with centralized sourcing and international environments. The same approach, on a smaller scale, applies within Yettel as part of the PPF/e& group today.</p>
+            </div>
+          </div>
+          <div className="timeline-item">
+            <div className="timeline-year">2016</div>
+            <div className="timeline-text">
+              <strong>Nelt</strong>
+              <p>Freelance sourcing consultant for one of Serbia's largest private distribution and freight-forwarding companies.</p>
+            </div>
+          </div>
+          <div className="timeline-item">
+            <div className="timeline-year">Ongoing</div>
+            <div className="timeline-text">
+              <strong>Continuous technical education</strong>
+              <p>Numerous courses and industry events in IT and telecom, alongside formal studies.</p>
+            </div>
           </div>
         </div>
       </section>
