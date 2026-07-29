@@ -47,11 +47,15 @@ const css = `
   .nav-cta:hover { background: var(--orange2); }
  
   /* HERO */
-  .hero {
+  .hero-wrap {
     min-height: 100vh;
+    display: flex; flex-direction: column;
+  }
+  .hero {
+    flex: 1;
     display: grid; grid-template-columns: 1fr 1fr;
     align-items: center; gap: 60px;
-    padding: 120px 48px 80px;
+    padding: 108px 48px 32px;
     position: relative; overflow: hidden;
   }
   .hero::before {
@@ -92,10 +96,12 @@ const css = `
   .cursor { display: inline-block; width: 2px; height: 13px; background: var(--orange); animation: blink 1s step-end infinite; vertical-align: middle; margin-left: 2px; }
   @keyframes blink { 50% { opacity: 0; } }
 
-  .panel-stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px 20px; padding: 8px 4px; }
-  .panel-stat-number { font-family: 'Space Grotesk', sans-serif; font-size: 32px; font-weight: 700; letter-spacing: -1.5px; line-height: 1; margin-bottom: 8px; }
-  .panel-stat-number span { color: var(--orange); }
-  .panel-stat-desc { font-size: 12.5px; color: var(--muted); line-height: 1.4; }
+  .panel-career-list { display: flex; flex-direction: column; }
+  .panel-career-item { display: flex; gap: 14px; align-items: baseline; padding: 11px 0; border-bottom: 1px solid var(--gray2); }
+  .panel-career-item:last-child { border-bottom: none; }
+  .panel-career-year { font-family: 'Space Grotesk', sans-serif; font-size: 11.5px; font-weight: 700; color: var(--orange); flex: 0 0 82px; }
+  .panel-career-role { font-size: 12.5px; color: var(--white); font-weight: 500; }
+  .panel-career-role span { color: var(--muted); font-weight: 400; }
  
   /* STATS */
   .stats-strip { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--gray2); border-bottom: 1px solid var(--gray2); }
@@ -189,6 +195,7 @@ export default function Home() {
       </nav>
  
       {/* HERO */}
+      <div className="hero-wrap">
       <section className="hero">
         <div>
           <div className="hero-eyebrow">Procurement Intelligence · AI-Powered</div>
@@ -208,27 +215,44 @@ export default function Home() {
             <span className="panel-title">Bojan Šipovac</span>
           </div>
           <div className="panel-body">
-            <div className="panel-stats-grid">
-              <div>
-                <div className="panel-stat-number">26<span>+</span></div>
-                <div className="panel-stat-desc">Years in sourcing & operations</div>
+            <div className="panel-career-list">
+              <div className="panel-career-item">
+                <div className="panel-career-year">1998</div>
+                <div className="panel-career-role">Mechanical Engineer <span>— career start</span></div>
               </div>
-              <div>
-                <div className="panel-stat-number">€<span>2B</span></div>
-                <div className="panel-stat-desc">In contracts managed</div>
+              <div className="panel-career-item">
+                <div className="panel-career-year">1999–2009</div>
+                <div className="panel-career-role">Telekom Srbija <span>— public procurement</span></div>
               </div>
-              <div>
-                <div className="panel-stat-number">7<span>x</span></div>
-                <div className="panel-stat-desc">Domains. One integrated view.</div>
+              <div className="panel-career-item">
+                <div className="panel-career-year">2010–2018</div>
+                <div className="panel-career-role">Global Sourcing Team <span>— Telenor Group, TPC Singapore</span></div>
               </div>
-              <div>
-                <div className="panel-stat-number">24<span>/7</span></div>
-                <div className="panel-stat-desc">AI coaching availability</div>
+              <div className="panel-career-item">
+                <div className="panel-career-year">2015–Present</div>
+                <div className="panel-career-role">Director for Sourcing <span>— Telenor / Yettel</span></div>
+              </div>
+              <div className="panel-career-item">
+                <div className="panel-career-year">2016</div>
+                <div className="panel-career-role">Nelt <span>— freelance sourcing consultant</span></div>
+              </div>
+              <div className="panel-career-item">
+                <div className="panel-career-year">Today</div>
+                <div className="panel-career-role">Fuentiva <span>— AI-powered coaching</span></div>
               </div>
             </div>
           </div>
         </div>
       </section>
+
+      {/* STATS */}
+      <div className="stats-strip">
+        <div className="stat-item"><div className="stat-number">26<span>+</span></div><div className="stat-desc">Years in sourcing & operations</div></div>
+        <div className="stat-item"><div className="stat-number">€<span>2B</span></div><div className="stat-desc">In contracts managed</div></div>
+        <div className="stat-item"><div className="stat-number">7<span>x</span></div><div className="stat-desc">Domains. One integrated view.</div></div>
+        <div className="stat-item"><div className="stat-number">24<span>/7</span></div><div className="stat-desc">AI coaching availability</div></div>
+      </div>
+      </div>
  
       {/* SERVICES */}
       <section className="section" id="services">
