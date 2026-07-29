@@ -97,7 +97,7 @@ const css = `
   @keyframes blink { 50% { opacity: 0; } }
 
   .panel-career-list { display: flex; flex-direction: column; }
-  .panel-career-item { display: flex; gap: 14px; align-items: baseline; padding: 11px 0; border-bottom: 1px solid var(--gray2); }
+  .panel-career-item { display: flex; gap: 14px; align-items: baseline; padding: 8px 0; border-bottom: 1px solid var(--gray2); }
   .panel-career-item:last-child { border-bottom: none; }
   .panel-career-year { font-family: 'Space Grotesk', sans-serif; font-size: 11.5px; font-weight: 700; color: var(--orange); flex: 0 0 82px; }
   .panel-career-role { font-size: 12.5px; color: var(--white); font-weight: 500; }
@@ -225,7 +225,15 @@ export default function Home() {
                 <div className="panel-career-role">Telekom Srbija <span>— public procurement</span></div>
               </div>
               <div className="panel-career-item">
-                <div className="panel-career-year">2010–2018</div>
+                <div className="panel-career-year">2010</div>
+                <div className="panel-career-role">Key Account Manager <span>— start-up</span></div>
+              </div>
+              <div className="panel-career-item">
+                <div className="panel-career-year">2010–2012</div>
+                <div className="panel-career-role">Council of Europe <span>— freelance</span></div>
+              </div>
+              <div className="panel-career-item">
+                <div className="panel-career-year">2011–2018</div>
                 <div className="panel-career-role">Global Sourcing Team <span>— Telenor Group, TPC Singapore</span></div>
               </div>
               <div className="panel-career-item">
