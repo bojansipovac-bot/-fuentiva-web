@@ -334,9 +334,6 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            <div style={{textAlign: 'center', marginTop: '36px'}}>
-              <a href="/login" className="btn-primary">Let's start</a>
-            </div>
           </div>
  
           <div className="chat-mockup">
@@ -362,6 +359,9 @@ export default function Home() {
               </div>
             </div>
           </div>
+        </div>
+        <div style={{textAlign: 'center', marginTop: '56px'}}>
+          <a href="/login" className="btn-primary" style={{fontSize: '18px', padding: '20px 52px'}}>Let's start</a>
         </div>
       </section>
  
