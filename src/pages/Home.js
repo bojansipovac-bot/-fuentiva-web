@@ -112,17 +112,17 @@ const css = `
   .stat-desc { font-size: 13px; color: var(--muted); }
  
   /* SERVICES */
-  .section { padding: 96px 48px; }
-  .section-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 2.5px; text-transform: uppercase; color: var(--orange); margin-bottom: 16px; }
-  .section-title { font-family: 'Space Grotesk', sans-serif; font-size: clamp(32px, 4vw, 48px); font-weight: 700; letter-spacing: -1.5px; line-height: 1.1; margin-bottom: 64px; max-width: 600px; }
+  .section { padding: 56px 48px 40px; }
+  .section-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 2.5px; text-transform: uppercase; color: var(--orange); margin-bottom: 12px; }
+  .section-title { font-family: 'Space Grotesk', sans-serif; font-size: clamp(28px, 3.4vw, 42px); font-weight: 700; letter-spacing: -1.5px; line-height: 1.1; margin-bottom: 32px; max-width: 700px; }
   .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--gray2); border: 1px solid var(--gray2); }
-  .service-card { background: var(--black); padding: 36px 32px; transition: background 0.2s; position: relative; }
+  .service-card { background: var(--black); padding: 22px 24px; transition: background 0.2s; position: relative; }
   .service-card:hover { background: var(--gray1); }
   .service-card.featured { background: var(--gray1); border: 1px solid rgba(255,85,0,0.3); margin: -1px; grid-column: span 3; }
-  .service-card.featured::before { content: 'AI-POWERED'; position: absolute; top: 20px; right: 20px; font-size: 9px; font-weight: 700; letter-spacing: 2px; color: var(--orange); background: var(--oglow); padding: 4px 8px; border: 1px solid rgba(255,85,0,0.3); }
-  .service-icon { font-size: 28px; margin-bottom: 20px; }
-  .service-name { font-family: 'Space Grotesk', sans-serif; font-size: 19px; font-weight: 600; letter-spacing: -0.5px; margin-bottom: 10px; }
-  .service-desc { font-size: 13.5px; color: var(--muted); line-height: 1.65; }
+  .service-card.featured::before { content: 'AI-POWERED'; position: absolute; top: 16px; right: 20px; font-size: 9px; font-weight: 700; letter-spacing: 2px; color: var(--orange); background: var(--oglow); padding: 4px 8px; border: 1px solid rgba(255,85,0,0.3); }
+  .service-icon { font-size: 22px; margin-bottom: 10px; }
+  .service-name { font-family: 'Space Grotesk', sans-serif; font-size: 16.5px; font-weight: 600; letter-spacing: -0.5px; margin-bottom: 6px; }
+  .service-desc { font-size: 12.5px; color: var(--muted); line-height: 1.5; }
  
   /* COACHING */
   .coaching-section { padding: 96px 48px; background: var(--gray1); border-top: 1px solid var(--gray2); border-bottom: 1px solid var(--gray2); }
@@ -238,7 +238,7 @@ export default function Home() {
               </div>
               <div className="panel-career-item">
                 <div className="panel-career-year">2015–Present</div>
-                <div className="panel-career-role">Director for Sourcing <span>— Telenor / Yettel</span></div>
+                <div className="panel-career-role">Director for Sourcing, RE & FM, Car Fleet <span>— Telenor / Yettel</span></div>
               </div>
               <div className="panel-career-item">
                 <div className="panel-career-year">2016</div>
@@ -265,7 +265,7 @@ export default function Home() {
       {/* SERVICES */}
       <section className="section" id="services">
         <div className="section-eyebrow">What I Do</div>
-        <h2 className="section-title">Seven domains.<br />One expert.</h2>
+        <h2 className="section-title">Seven domains. One expert.</h2>
         <div className="services-grid">
           <div className="service-card">
             <div className="service-icon">⚡</div>
@@ -285,7 +285,7 @@ export default function Home() {
           <div className="service-card">
             <div className="service-icon">🚗</div>
             <div className="service-name">Car Fleet</div>
-            <p className="service-desc">Fleet procurement, TCO analysis, policy design, and vendor management. Optimizing cost and compliance across your vehicle assets.</p>
+            <p className="service-desc">Car Fleet procurement, TCO analysis, policy design, and vendor management. Optimizing cost and compliance across your vehicle assets.</p>
           </div>
           <div className="service-card">
             <div className="service-icon">👥</div>
@@ -334,6 +334,9 @@ export default function Home() {
                 </div>
               </div>
             </div>
+            <div style={{textAlign: 'center', marginTop: '36px'}}>
+              <a href="/login" className="btn-primary">Let's start</a>
+            </div>
           </div>
  
           <div className="chat-mockup">
@@ -370,9 +373,9 @@ export default function Home() {
           <div className="about-title">Sourcing Director · AI Builder</div>
         </div>
         <div>
-          <p className="about-bio">I spent <strong>26 years</strong> inside major telecommunications companies — managing sourcing, real estate, facility management, fleet, and teams at scale. I've negotiated contracts worth hundreds of millions, built procurement functions from scratch, and run multi-country category strategies.</p>
-          <p className="about-bio">My career started in <strong>public procurement at Telekom Srbija</strong>, where I learned the discipline of regulated, high-stakes tendering. I then moved into corporate procurement at Yettel, leading sourcing across five domains simultaneously.</p>
-          <p className="about-bio">Now I combine that hands-on expertise with <strong>AI systems I build myself</strong> — to help procurement professionals move faster and smarter. Fuentiva is that combination.</p>
+          <p className="about-bio">I spent 26 years inside major telecommunications companies — managing sourcing, real estate, facility management, car fleet, and teams at scale. I've negotiated contracts worth hundreds of millions, built procurement functions from scratch, and run multi-country category strategies.</p>
+          <p className="about-bio">My career started in public procurement at Telekom Srbija, where I learned the discipline of regulated, high-stakes tendering. I then moved into corporate procurement at Yettel, leading sourcing across five domains simultaneously.</p>
+          <p className="about-bio">Now I combine that hands-on expertise with AI systems I build myself — to help procurement professionals move faster and smarter. Fuentiva is that combination.</p>
           <div className="expertise-tags">
             <span className="tag">Strategic Sourcing</span>
             <span className="tag">Vendor Negotiation</span>
@@ -432,8 +435,8 @@ export default function Home() {
           <div className="timeline-item">
             <div className="timeline-year">2015 – Present</div>
             <div className="timeline-text">
-              <strong>Director for Sourcing, Telenor / Yettel</strong>
-              <p>Took on the role of Director for Sourcing in 2015.</p>
+              <strong>Director for Sourcing, RE & FM, Car Fleet — Telenor / Yettel</strong>
+              <p>Took on this director-level role in 2015.</p>
             </div>
           </div>
           <div className="timeline-item">
@@ -463,8 +466,8 @@ export default function Home() {
       {/* CTA */}
       <section className="cta-section" id="contact">
         <h2>Ready to upgrade<br />your sourcing game?</h2>
-        <p>Start with a free 30-minute intro call. No pitch — just sourcing talk.</p>
-        <a href="mailto:bojan.sipovac@gmail.com" className="btn-primary" style={{fontSize:'15px', padding:'16px 36px'}}>Book intro call →</a>
+        <p>Start with a free 15-minute intro call. No pitch — just sourcing talk.</p>
+        <a href="https://calendly.com/bojan-sipovac/intro-call-15-min" target="_blank" rel="noreferrer" className="btn-primary" style={{fontSize:'15px', padding:'16px 36px'}}>Book intro call →</a>
       </section>
  
       {/* FOOTER */}
