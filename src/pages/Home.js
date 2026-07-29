@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
  
 const styles = {
   '@import': 'https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500&display=swap',
@@ -91,6 +91,11 @@ const css = `
   .ai-insight p { font-size: 12.5px; color: var(--light); line-height: 1.6; }
   .cursor { display: inline-block; width: 2px; height: 13px; background: var(--orange); animation: blink 1s step-end infinite; vertical-align: middle; margin-left: 2px; }
   @keyframes blink { 50% { opacity: 0; } }
+
+  .panel-stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px 20px; padding: 8px 4px; }
+  .panel-stat-number { font-family: 'Space Grotesk', sans-serif; font-size: 32px; font-weight: 700; letter-spacing: -1.5px; line-height: 1; margin-bottom: 8px; }
+  .panel-stat-number span { color: var(--orange); }
+  .panel-stat-desc { font-size: 12.5px; color: var(--muted); line-height: 1.4; }
  
   /* STATS */
   .stats-strip { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--gray2); border-bottom: 1px solid var(--gray2); }
@@ -167,13 +172,6 @@ const css = `
 `;
  
 export default function Home() {
-  const [pbWidth, setPbWidth] = useState(0);
- 
-  useEffect(() => {
-    const timer = setTimeout(() => setPbWidth(78), 500);
-    return () => clearTimeout(timer);
-  }, []);
- 
   return (
     <>
       <style>{css}</style>
@@ -207,49 +205,30 @@ export default function Home() {
             <div className="panel-dot" style={{background:'#FF5500'}}></div>
             <div className="panel-dot" style={{background:'#2E2E2E'}}></div>
             <div className="panel-dot" style={{background:'#2E2E2E'}}></div>
-            <span className="panel-title">AI Procurement Analysis</span>
+            <span className="panel-title">Bojan Šipovac</span>
           </div>
           <div className="panel-body">
-            <div className="metric-row">
-              <span className="metric-label">Vendor Risk Score</span>
-              <span className="metric-value orange">Medium — 3 flags</span>
-            </div>
-            <div className="metric-row">
-              <span className="metric-label">Contract Savings Identified</span>
-              <span className="metric-value positive">+€47,200</span>
-            </div>
-            <div className="metric-row">
-              <span className="metric-label">RFQ Response Rate</span>
-              <span className="metric-value">84%</span>
-            </div>
-            <div className="metric-row">
-              <span className="metric-label">Price Benchmark vs Market</span>
-              <span className="metric-value positive">−12.4%</span>
-            </div>
-            <div className="pb-wrap">
-              <div className="pb-label">
-                <span>Negotiation leverage analysis</span>
-                <span style={{color:'var(--orange)'}}>78%</span>
+            <div className="panel-stats-grid">
+              <div>
+                <div className="panel-stat-number">26<span>+</span></div>
+                <div className="panel-stat-desc">Years in sourcing & operations</div>
               </div>
-              <div className="pb-track">
-                <div className="pb-fill" style={{width: `${pbWidth}%`}}></div>
+              <div>
+                <div className="panel-stat-number">€<span>2B</span></div>
+                <div className="panel-stat-desc">In contracts managed</div>
               </div>
-            </div>
-            <div className="ai-insight">
-              <div className="ai-insight-label">AI Insight</div>
-              <p>Supplier concentration risk is high — 3 vendors account for 71% of OPEX. Recommend dual-sourcing strategy for categories A & B.<span className="cursor"></span></p>
+              <div>
+                <div className="panel-stat-number">7<span>x</span></div>
+                <div className="panel-stat-desc">Domains. One integrated view.</div>
+              </div>
+              <div>
+                <div className="panel-stat-number">24<span>/7</span></div>
+                <div className="panel-stat-desc">AI coaching availability</div>
+              </div>
             </div>
           </div>
         </div>
       </section>
- 
-      {/* STATS */}
-      <div className="stats-strip">
-        <div className="stat-item"><div className="stat-number">26<span>+</span></div><div className="stat-desc">Years in sourcing & operations</div></div>
-        <div className="stat-item"><div className="stat-number">€<span>2B</span></div><div className="stat-desc">In contracts managed</div></div>
-        <div className="stat-item"><div className="stat-number">7<span>x</span></div><div className="stat-desc">Domains. One integrated view.</div></div>
-        <div className="stat-item"><div className="stat-number">24<span>/7</span></div><div className="stat-desc">AI coaching availability</div></div>
-      </div>
  
       {/* SERVICES */}
       <section className="section" id="services">
@@ -415,7 +394,14 @@ export default function Home() {
             <div className="timeline-year">2010 – Present</div>
             <div className="timeline-text">
               <strong>Yettel (formerly Telenor)</strong>
-              <p>Since 2014, part of the management team.</p>
+              <p>Joined the company in 2010.</p>
+            </div>
+          </div>
+          <div className="timeline-item">
+            <div className="timeline-year">2015 – Present</div>
+            <div className="timeline-text">
+              <strong>Director for Sourcing, Telenor / Yettel</strong>
+              <p>Took on the role of Director for Sourcing in 2015.</p>
             </div>
           </div>
           <div className="timeline-item">
