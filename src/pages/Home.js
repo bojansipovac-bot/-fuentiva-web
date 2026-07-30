@@ -164,13 +164,15 @@ const css = `
  
   /* ABOUT */
   .about-section { padding: 96px 48px; display: grid; grid-template-columns: 1fr 2fr; gap: 80px; }
-  .about-label { font-size: 11px; font-weight: 600; letter-spacing: 2.5px; text-transform: uppercase; color: var(--orange); margin-bottom: 12px; }
-  .about-name { font-family: 'Space Grotesk', sans-serif; font-size: 36px; font-weight: 700; letter-spacing: -1.5px; line-height: 1.1; margin-bottom: 6px; }
-  .about-title { font-size: 14px; color: var(--muted); }
-  .about-bio { font-size: 16px; color: var(--light); line-height: 1.75; margin-bottom: 20px; }
-  .about-bio strong { color: var(--white); }
-  .expertise-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 28px; }
-  .tag { font-size: 11.5px; font-weight: 500; padding: 5px 12px; border: 1px solid var(--gray3); color: var(--muted); }
+  .about-name { font-family: 'Space Grotesk', sans-serif; font-size: 36px; font-weight: 700; letter-spacing: -1.5px; line-height: 1.1; margin-bottom: 14px; }
+  .about-title { font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 700; letter-spacing: -0.5px; line-height: 1.25; color: var(--white); }
+
+  .milestone-list { max-width: 780px; }
+  .milestone-item { display: flex; gap: 20px; align-items: baseline; padding: 13px 0; border-bottom: 1px solid var(--gray2); }
+  .milestone-item:last-child { border-bottom: none; }
+  .milestone-year { font-family: 'Space Grotesk', sans-serif; font-size: 12.5px; font-weight: 700; color: var(--orange); flex: 0 0 110px; }
+  .milestone-role { font-size: 14px; color: var(--white); font-weight: 500; }
+  .milestone-role span { color: var(--muted); font-weight: 400; }
 
   /* TIMELINE */
   .timeline-section { padding: 0 48px 96px; }
@@ -497,103 +499,52 @@ export default function Home() {
           </div>
         </div>
         <div style={{textAlign: 'center', marginTop: '56px'}}>
-          <a href="mailto:bojan.sipovac@gmail.com" className="btn-primary" style={{fontSize: '18px', padding: '20px 52px'}}>Talk to Bojan →</a>
+          <a href="/login" className="btn-primary" style={{fontSize: '18px', padding: '20px 52px'}}>Let's start</a>
         </div>
       </section>
  
       {/* ABOUT */}
       <section className="about-section" id="about">
         <div>
-          <div className="about-label">About</div>
           <div className="about-name">Bojan<br />Šipovac</div>
-          <div className="about-title">Sourcing Director · AI Builder</div>
+          <div className="about-title">26 years, built<br />step by step.</div>
         </div>
-        <div>
-          <p className="about-bio">I spent 26 years inside major telecommunications companies — managing sourcing, real estate, facility management, car fleet, and teams at scale. I've negotiated contracts worth hundreds of millions, built procurement functions from scratch, and run multi-country category strategies.</p>
-          <p className="about-bio">My career started in public procurement at Telekom Srbija, where I learned the discipline of regulated, high-stakes tendering. I then moved into corporate procurement at Yettel, leading sourcing across five domains simultaneously.</p>
-          <p className="about-bio">Now I combine that hands-on expertise with AI systems I build myself — to help procurement professionals move faster and smarter. Fuentiva is that combination.</p>
-          <div className="expertise-tags">
-            <span className="tag">Strategic Sourcing</span>
-            <span className="tag">Vendor Negotiation</span>
-            <span className="tag">Contract Strategy</span>
-            <span className="tag">RFQ Design</span>
-            <span className="tag">TCO Analysis</span>
-            <span className="tag">Facility Management</span>
-            <span className="tag">Real Estate</span>
-            <span className="tag">Car Fleet</span>
-            <span className="tag">Public Procurement</span>
-            <span className="tag">Team Leadership</span>
-            <span className="tag">AI Implementation</span>
+        <div className="milestone-list">
+          <div className="milestone-item">
+            <div className="milestone-year">1998</div>
+            <div className="milestone-role">Mechanical Engineer <span>— career start</span></div>
+          </div>
+          <div className="milestone-item">
+            <div className="milestone-year">1999–2009</div>
+            <div className="milestone-role">Telekom Srbija <span>— public procurement</span></div>
+          </div>
+          <div className="milestone-item">
+            <div className="milestone-year">2010</div>
+            <div className="milestone-role">Key Account Manager <span>— start-up, 5 major clients</span></div>
+          </div>
+          <div className="milestone-item">
+            <div className="milestone-year">2010–2012</div>
+            <div className="milestone-role">Council of Europe <span>— freelance</span></div>
+          </div>
+          <div className="milestone-item">
+            <div className="milestone-year">2010–Present</div>
+            <div className="milestone-role">Yettel <span>— formerly Telenor</span></div>
+          </div>
+          <div className="milestone-item">
+            <div className="milestone-year">2011–2018</div>
+            <div className="milestone-role">Global Sourcing Team <span>— Telenor Group, TPC Singapore</span></div>
+          </div>
+          <div className="milestone-item">
+            <div className="milestone-year">2015–Present</div>
+            <div className="milestone-role">Director, Sourcing/RE/FM/Car Fleet <span>— Telenor / Yettel</span></div>
+          </div>
+          <div className="milestone-item">
+            <div className="milestone-year">2016</div>
+            <div className="milestone-role">Nelt <span>— freelance sourcing consultant</span></div>
           </div>
         </div>
       </section>
 
-      {/* PROFESSIONAL TIMELINE */}
-      <section className="timeline-section">
-        <div className="section-eyebrow">Career Path</div>
-        <h2 className="section-title">26 years, built<br />step by step.</h2>
-        <div className="timeline-list">
-          <div className="timeline-item">
-            <div className="timeline-year">1998</div>
-            <div className="timeline-text">
-              <strong>Graduated as a Mechanical Engineer</strong>
-              <p>Built a career from there in sourcing, real estate, facility management, and car fleet — mostly within the telecom sector.</p>
-            </div>
-          </div>
-          <div className="timeline-item">
-            <div className="timeline-year">1999 – 2009</div>
-            <div className="timeline-text">
-              <strong>Telekom Srbija</strong>
-              <p>10 years at the state-owned operator, including hands-on experience in public procurement.</p>
-            </div>
-          </div>
-          <div className="timeline-item">
-            <div className="timeline-year">2010</div>
-            <div className="timeline-text">
-              <strong>Key Account Manager, start-up</strong>
-              <p>Led 5 major client engagements — direct experience in sales and account management.</p>
-            </div>
-          </div>
-          <div className="timeline-item">
-            <div className="timeline-year">2010 – 2012</div>
-            <div className="timeline-text">
-              <strong>Council of Europe</strong>
-              <p>Freelance engagement alongside corporate work.</p>
-            </div>
-          </div>
-          <div className="timeline-item">
-            <div className="timeline-year">2010 – Present</div>
-            <div className="timeline-text">
-              <strong>Yettel (formerly Telenor)</strong>
-              <p>Joined the company in 2010.</p>
-            </div>
-          </div>
-          <div className="timeline-item">
-            <div className="timeline-year">2015 – Present</div>
-            <div className="timeline-text">
-              <strong>Director for Sourcing, RE & FM, Car Fleet — Telenor / Yettel</strong>
-              <p>Took on this director-level role in 2015.</p>
-            </div>
-          </div>
-          <div className="timeline-item">
-            <div className="timeline-year">2011 – 2018</div>
-            <div className="timeline-text">
-              <strong>Global Sourcing Team, Telenor Group</strong>
-              <p>Representative for Telenor Serbia & Montenegro on the global sourcing team; contributed to establishing TPC (Telenor Procurement Company) in Singapore — direct experience with centralized sourcing and international environments. The same approach, on a smaller scale, applies within Yettel as part of the PPF/e& group today.</p>
-            </div>
-          </div>
-          <div className="timeline-item">
-            <div className="timeline-year">2016</div>
-            <div className="timeline-text">
-              <strong>Nelt</strong>
-              <p>Freelance sourcing consultant for one of Serbia's largest private distribution and freight-forwarding companies.</p>
-            </div>
-          </div>
-          <div className="timeline-item">
-            <div className="timeline-year">Ongoing</div>
-            <div className="timeline-text">
-              <strong>Continuous technical education</strong>
-              <p>Numerous courses and industry events in IT and telecom, alongside formal studies.</p>
             </div>
           </div>
         </div>
