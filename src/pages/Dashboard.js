@@ -109,6 +109,8 @@ export default function Dashboard() {
   const [paymentMessage, setPaymentMessage] = useState(null);
   const [checkoutLoading, setCheckoutLoading] = useState(null);
   const [pendingProduct, setPendingProduct] = useState(null);
+  const [timerLink, setTimerLink] = useState(null);
+  const [lookupTimerForProduct, setLookupTimerForProduct] = useState(null);
 
   const cleanLocalNumber = (value) => value.replace(/[\s\-()]/g, '').replace(/^0+/, '');
   const [saving, setSaving] = useState(false);
@@ -123,6 +125,9 @@ export default function Dashboard() {
 
     if (payment === 'success') {
       setPaymentMessage({ type: 'success', text: 'Payment successful — thank you!' });
+      if (product && product.startsWith('quickwin_')) {
+        setLookupTimerForProduct(product);
+      }
     } else if (payment === 'cancelled') {
       setPaymentMessage({ type: 'error', text: 'Payment was cancelled — no charge was made.' });
     } else if (payment === 'pending' && product) {
@@ -172,6 +177,24 @@ export default function Dashboard() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, pendingProduct]);
+
+  // Once the user is loaded and a Quick Win payment just succeeded, fetch the
+  // session timer that was just created so we can show its shared link.
+  useEffect(() => {
+    if (user && lookupTimerForProduct) {
+      setLookupTimerForProduct(null);
+      supabase
+        .from('session_timers')
+        .select('id')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .single()
+        .then(({ data }) => {
+          if (data) setTimerLink(`/timer/${data.id}`);
+        });
+    }
+  }, [user, lookupTimerForProduct]);
 
   const goToCalendly = (product) => {
     const url = CALENDLY_URLS[product];
@@ -297,6 +320,13 @@ export default function Dashboard() {
           {paymentMessage && (
             <div className={paymentMessage.type === 'success' ? 'alert-success' : 'alert-error'} style={{ maxWidth: 560 }}>
               {paymentMessage.text}
+              {timerLink && (
+                <div style={{ marginTop: '8px' }}>
+                  <a href={timerLink} target="_blank" rel="noreferrer" style={{ color: 'inherit', textDecoration: 'underline', fontWeight: 600 }}>
+                    Open your session timer →
+                  </a>
+                </div>
+              )}
             </div>
           )}
 
