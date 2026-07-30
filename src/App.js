@@ -5,6 +5,7 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Onboarding from './pages/Onboarding';
 import Admin from './pages/Admin';
+import Timer from './pages/Timer';
 import './App.css';
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/onboarding" element={<Onboarding />} />
         <Route path="/admin" element={<Admin />} />
+        <Route path="/timer/:id" element={<Timer />} />
       </Routes>
     </Router>
   );
