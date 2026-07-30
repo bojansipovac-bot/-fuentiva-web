@@ -211,6 +211,19 @@ const css = `
   .wp-row strong { font-family: 'Space Grotesk', sans-serif; font-size: 17px; font-weight: 700; color: var(--white); }
   .wp-meta { font-size: 11.5px; color: var(--muted); padding: 14px 0 20px; }
 
+  /* PRICING — RESPONSIVE */
+  @media (max-width: 1100px) {
+    .pricing-grid { grid-template-columns: repeat(2, 1fr); }
+    .workshop-block { grid-template-columns: 1fr; padding: 32px; gap: 28px; }
+  }
+  @media (max-width: 640px) {
+    .section { padding: 40px 20px 28px; }
+    .pricing-grid { grid-template-columns: 1fr; }
+    .price-card { padding: 24px 20px; }
+    .workshop-block { padding: 24px 20px; }
+    .wp-row { flex-direction: column; align-items: flex-start; gap: 4px; }
+  }
+
   /* FOOTER */
   footer { border-top: 1px solid var(--gray2); padding: 32px 48px; display: flex; justify-content: space-between; align-items: center; }
   .footer-copy { font-size: 12px; color: var(--muted); }
