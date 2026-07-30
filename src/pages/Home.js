@@ -1,14 +1,14 @@
 import React from 'react';
- 
+
 const styles = {
   '@import': 'https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500&display=swap',
 };
- 
+
 const css = `
   @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500&display=swap');
- 
+
   * { box-sizing: border-box; margin: 0; padding: 0; }
- 
+
   :root {
     --black: #080808;
     --gray1: #111111;
@@ -21,14 +21,14 @@ const css = `
     --orange2: #FF7733;
     --oglow: rgba(255, 85, 0, 0.10);
   }
- 
+
   body {
     background: var(--black);
     color: var(--white);
     font-family: 'Inter', sans-serif;
     -webkit-font-smoothing: antialiased;
   }
- 
+
   /* NAV */
   .nav {
     position: fixed; top: 0; left: 0; right: 0; z-index: 100;
@@ -45,7 +45,7 @@ const css = `
   .nav-links a:hover { color: var(--white); }
   .nav-cta { background: var(--orange); color: #fff; font-family: 'Space Grotesk', sans-serif; font-size: 13.5px; font-weight: 600; padding: 9px 22px; border: none; cursor: pointer; text-decoration: none; transition: background 0.2s; }
   .nav-cta:hover { background: var(--orange2); }
- 
+
   /* HERO */
   .hero-wrap {
     min-height: 100vh;
@@ -73,7 +73,7 @@ const css = `
   .btn-primary:hover { background: var(--orange2); }
   .btn-ghost { color: var(--light); font-size: 14px; font-weight: 500; text-decoration: none; border-bottom: 1px solid var(--gray3); padding-bottom: 2px; transition: color 0.2s; }
   .btn-ghost:hover { color: var(--white); }
- 
+
   /* AI PANEL */
   .ai-panel { background: var(--gray1); border: 1px solid var(--gray2); }
   .panel-header { display: flex; align-items: center; gap: 8px; padding: 14px 20px; border-bottom: 1px solid var(--gray2); background: var(--gray2); }
@@ -102,7 +102,7 @@ const css = `
   .panel-career-year { font-family: 'Space Grotesk', sans-serif; font-size: 11.5px; font-weight: 700; color: var(--orange); flex: 0 0 82px; }
   .panel-career-role { font-size: 12.5px; color: var(--white); font-weight: 500; }
   .panel-career-role span { color: var(--muted); font-weight: 400; }
- 
+
   /* STATS */
   .stats-strip { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--gray2); border-bottom: 1px solid var(--gray2); }
   .stat-item { padding: 36px 48px; border-right: 1px solid var(--gray2); }
@@ -110,7 +110,7 @@ const css = `
   .stat-number { font-family: 'Space Grotesk', sans-serif; font-size: 42px; font-weight: 700; letter-spacing: -2px; line-height: 1; margin-bottom: 6px; }
   .stat-number span { color: var(--orange); }
   .stat-desc { font-size: 13px; color: var(--muted); }
- 
+
   /* SERVICES */
   .section { padding: 56px 48px 40px; }
   .section-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 2.5px; text-transform: uppercase; color: var(--orange); margin-bottom: 12px; }
@@ -140,7 +140,7 @@ const css = `
   .service-icon { font-size: 22px; margin-bottom: 10px; }
   .service-name { font-family: 'Space Grotesk', sans-serif; font-size: 16.5px; font-weight: 600; letter-spacing: -0.5px; margin-bottom: 6px; }
   .service-desc { font-size: 12.5px; color: var(--muted); line-height: 1.5; }
- 
+
   /* COACHING */
   .coaching-section { padding: 96px 48px; background: var(--gray1); border-top: 1px solid var(--gray2); border-bottom: 1px solid var(--gray2); }
   .coaching-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
@@ -149,7 +149,7 @@ const css = `
   .feature-bullet { width: 6px; height: 6px; background: var(--orange); margin-top: 8px; flex-shrink: 0; }
   .feature-text strong { font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 600; display: block; margin-bottom: 4px; }
   .feature-text p { font-size: 13.5px; color: var(--muted); line-height: 1.6; }
- 
+
   /* CHAT MOCKUP */
   .chat-mockup { background: var(--black); border: 1px solid var(--gray2); }
   .chat-header { padding: 14px 20px; background: var(--gray2); border-bottom: 1px solid var(--gray3); display: flex; align-items: center; gap: 10px; }
@@ -161,7 +161,7 @@ const css = `
   .chat-msg.bot { background: var(--gray2); color: var(--light); align-self: flex-start; }
   .chat-msg.user { background: var(--orange); color: #fff; align-self: flex-end; }
   .chat-time { font-size: 10px; color: var(--gray3); margin-top: 4px; }
- 
+
   /* ABOUT */
   .about-section { padding: 150px 48px; display: grid; grid-template-columns: minmax(360px, 420px) 1fr; gap: 60px; }
   .about-name { font-family: 'Space Grotesk', sans-serif; font-size: 36px; font-weight: 700; letter-spacing: -1.5px; line-height: 1.1; margin-bottom: 14px; }
@@ -181,13 +181,13 @@ const css = `
   .timeline-year { font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 700; color: var(--orange); flex: 0 0 130px; padding-top: 2px; }
   .timeline-text strong { font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 600; display: block; margin-bottom: 4px; color: var(--white); }
   .timeline-text p { font-size: 13.5px; color: var(--muted); line-height: 1.65; }
- 
+
   /* CTA */
   .cta-section { padding: 96px 48px; text-align: center; position: relative; overflow: hidden; }
   .cta-section::before { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 600px; height: 400px; background: radial-gradient(ellipse, rgba(255,85,0,0.08) 0%, transparent 70%); pointer-events: none; }
   .cta-section h2 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(36px, 5vw, 58px); font-weight: 700; letter-spacing: -2px; line-height: 1.05; margin-bottom: 20px; }
   .cta-section p { font-size: 16px; color: var(--muted); margin-bottom: 44px; }
- 
+
   /* FOOTER */
   footer { border-top: 1px solid var(--gray2); padding: 32px 48px; display: flex; justify-content: space-between; align-items: center; }
   .footer-copy { font-size: 12px; color: var(--muted); }
@@ -195,12 +195,12 @@ const css = `
   .footer-links a { font-size: 12px; color: var(--muted); text-decoration: none; transition: color 0.2s; }
   .footer-links a:hover { color: var(--white); }
 `;
- 
+
 export default function Home() {
   return (
     <>
       <style>{css}</style>
- 
+
       {/* NAV */}
       <nav className="nav">
         <a href="/" className="logo">Fuen<span>tiva</span></a>
@@ -214,7 +214,7 @@ export default function Home() {
         </ul>
         <a href="/login" className="nav-cta">Client Login</a>
       </nav>
- 
+
       {/* HERO */}
       <div className="hero-wrap">
       <section className="hero">
@@ -227,7 +227,7 @@ export default function Home() {
             <a href="#domains" className="btn-ghost">Explore services</a>
           </div>
         </div>
- 
+
         <div className="ai-panel">
           <div className="panel-header">
             <div className="panel-dot" style={{background:'#FF5500'}}></div>
@@ -282,7 +282,7 @@ export default function Home() {
         <div className="stat-item"><div className="stat-number">24<span>/7</span></div><div className="stat-desc">AI coaching availability</div></div>
       </div>
       </div>
- 
+
       {/* SERVICES */}
       <section className="section" id="domains">
         <div className="section-eyebrow">What I Do</div>
@@ -382,7 +382,7 @@ export default function Home() {
 
         </div>
       </section>
- 
+
       {/* COACHING */}
       <section className="coaching-section" id="coaching">
         <div className="coaching-inner">
@@ -413,7 +413,7 @@ export default function Home() {
               </div>
             </div>
           </div>
- 
+
           <div className="chat-mockup">
             <div className="chat-header">
               <div className="chat-avatar">B</div>
@@ -502,7 +502,7 @@ export default function Home() {
           <a href="/login" className="btn-primary" style={{fontSize: '18px', padding: '20px 52px'}}>Let's start</a>
         </div>
       </section>
- 
+
       {/* ABOUT */}
       <section className="about-section" id="about">
         <div>
@@ -549,10 +549,11 @@ export default function Home() {
       {/* CTA */}
       <section className="cta-section" id="contact">
         <h2>Ready to upgrade<br />your sourcing game?</h2>
-        <p>Start with a free 15-minute intro call. No pitch — just sourcing talk.</p>
+        <p>Book a free 15-minute call — we'll pinpoint where you (or your team) are stuck and whether coaching is the right fit. No pitch, no obligation.</p>
         <a href="https://calendly.com/bojan-sipovac/intro-call-15-min" target="_blank" rel="noreferrer" className="btn-primary" style={{fontSize:'15px', padding:'16px 36px'}}>Book intro call →</a>
+        <p style={{fontSize:'13px', color:'var(--muted)', marginTop:'24px', marginBottom:0}}>Have a specific problem to solve right now? A <a href="#offers" style={{color:'var(--orange)', textDecoration:'none'}}>paid Quick Win session</a> is the faster route.</p>
       </section>
- 
+
       {/* FOOTER */}
       <footer>
         <div className="footer-copy">© 2026 Fuentiva. All rights reserved.</div>
