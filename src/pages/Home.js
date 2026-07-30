@@ -203,7 +203,8 @@ export default function Home() {
       <nav className="nav">
         <a href="/" className="logo">Fuen<span>tiva</span></a>
         <ul className="nav-links">
-          <li><a href="#services">Services</a></li>
+          <li><a href="#domains">Expert Domains</a></li>
+          <li><a href="#offers">Offers</a></li>
           <li><a href="#coaching">AI Coaching</a></li>
           <li><a href="#about">About</a></li>
           <li><a href="#contact">Contact</a></li>
@@ -220,7 +221,7 @@ export default function Home() {
           <p className="hero-sub">26 years of sourcing, facility management, and real estate expertise — now amplified by AI. Built for professionals who need real answers, not generic advice.</p>
           <div className="hero-actions">
             <a href="#coaching" className="btn-primary">Start AI Coaching</a>
-            <a href="#services" className="btn-ghost">Explore services</a>
+            <a href="#domains" className="btn-ghost">Explore services</a>
           </div>
         </div>
  
@@ -280,8 +281,50 @@ export default function Home() {
       </div>
  
       {/* SERVICES */}
-      <section className="section" id="services">
+      <section className="section" id="domains">
         <div className="section-eyebrow">What I Do</div>
+        <h2 className="section-title">Expert Domains</h2>
+        <div className="services-grid">
+          <div className="service-card">
+            <div className="service-icon">⚡</div>
+            <div className="service-name">Strategic Sourcing</div>
+            <p className="service-desc">Category strategy, RFQ design, vendor evaluation frameworks, and savings realization. Built from real telecom-scale experience.</p>
+          </div>
+          <div className="service-card">
+            <div className="service-icon">🏢</div>
+            <div className="service-name">Real Estate</div>
+            <p className="service-desc">Site acquisition, lease negotiation, portfolio optimization. Aligning real estate strategy with business operations at scale.</p>
+          </div>
+          <div className="service-card">
+            <div className="service-icon">🔧</div>
+            <div className="service-name">Facility Management</div>
+            <p className="service-desc">FM strategy, vendor governance, SLA design, and OPEX control. From single sites to multi-country portfolios.</p>
+          </div>
+          <div className="service-card">
+            <div className="service-icon">🚗</div>
+            <div className="service-name">Car Fleet</div>
+            <p className="service-desc">Car Fleet procurement, TCO analysis, policy design, and vendor management. Optimizing cost and compliance across your vehicle assets.</p>
+          </div>
+          <div className="service-card">
+            <div className="service-icon">👥</div>
+            <div className="service-name">Team Leadership & Management</div>
+            <p className="service-desc">Building and scaling procurement teams. Organizational design, KPI frameworks, coaching managers to lead with clarity and results.</p>
+          </div>
+          <div className="service-card">
+            <div className="service-icon">🏛️</div>
+            <div className="service-name">Public Procurement</div>
+            <p className="service-desc">Deep expertise in public tender processes from Telekom Srbija. Compliance, strategy, and efficiency in regulated procurement environments.</p>
+          </div>
+          <div className="service-card featured">
+            <div className="service-icon">🤖</div>
+            <div className="service-name">AI in Procurement</div>
+            <p className="service-desc">Practical AI implementation for sourcing teams — from automated RFQ analysis to AI coaching agents. Not theory. Deployed systems that work in the real world of enterprise procurement.</p>
+          </div>
+        </div>
+      </section>
+
+      <section className="section" id="offers">
+        <div className="section-eyebrow">Offers</div>
         <h2 className="section-title">Two ways to work with Fuentiva.</h2>
         <div className="services-split">
 
