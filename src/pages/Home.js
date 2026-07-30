@@ -545,11 +545,7 @@ export default function Home() {
         </div>
       </section>
 
-            </div>
-          </div>
-        </div>
-      </section>
- 
+
       {/* CTA */}
       <section className="cta-section" id="contact">
         <h2>Ready to upgrade<br />your sourcing game?</h2>
