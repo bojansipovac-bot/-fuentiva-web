@@ -205,7 +205,8 @@ export default function Home() {
         <ul className="nav-links">
           <li><a href="#domains">Expert Domains</a></li>
           <li><a href="#offers">Offers</a></li>
-          <li><a href="#coaching">AI Coaching</a></li>
+          <li><a href="#coaching">Personal Coach</a></li>
+          <li><a href="#company-coaching">Company Coach</a></li>
           <li><a href="#about">About</a></li>
           <li><a href="#contact">Contact</a></li>
         </ul>
@@ -374,7 +375,7 @@ export default function Home() {
               <div className="offer-desc">A live 30-minute session with Bojan for your team — team leadership, negotiation, or any of the 5 core domains.</div>
             </div>
 
-            <div className="col-cta"><a href="mailto:bojan.sipovac@gmail.com" className="btn-ghost">Get in touch →</a></div>
+            <div className="col-cta"><a href="#company-coaching" className="btn-primary">Start Corporate Session</a></div>
           </div>
 
         </div>
@@ -384,7 +385,7 @@ export default function Home() {
       <section className="coaching-section" id="coaching">
         <div className="coaching-inner">
           <div>
-            <div className="section-eyebrow">Coaching Portal</div>
+            <div className="section-eyebrow">Personal Coach</div>
             <h2 className="section-title" style={{marginBottom:0}}>Your personal procurement expert. Always available.</h2>
             <div className="coaching-features">
               <div className="feature-item">
@@ -437,6 +438,66 @@ export default function Home() {
         </div>
         <div style={{textAlign: 'center', marginTop: '56px'}}>
           <a href="/login" className="btn-primary" style={{fontSize: '18px', padding: '20px 52px'}}>Let's start</a>
+        </div>
+      </section>
+
+      {/* COMPANY COACH */}
+      <section className="coaching-section" id="company-coaching">
+        <div className="coaching-inner">
+          <div>
+            <div className="section-eyebrow">Company Coach</div>
+            <h2 className="section-title" style={{marginBottom:0}}>Give your whole team access to expert guidance.</h2>
+            <div className="coaching-features">
+              <div className="feature-item">
+                <div className="feature-bullet"></div>
+                <div className="feature-text">
+                  <strong>Team-wide AI Coaching</strong>
+                  <p>Every employee gets 24/7 access to the same AI coaching, under one company account.</p>
+                </div>
+              </div>
+              <div className="feature-item">
+                <div className="feature-bullet"></div>
+                <div className="feature-text">
+                  <strong>Corporate Training Sessions</strong>
+                  <p>A live 30-minute session with Bojan for your team — team leadership, negotiation, or any of the 5 core domains.</p>
+                </div>
+              </div>
+              <div className="feature-item">
+                <div className="feature-bullet"></div>
+                <div className="feature-text">
+                  <strong>One consistent standard</strong>
+                  <p>The same expertise and approach applied across your whole organization — not fragmented, one-off advice.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="chat-mockup">
+            <div className="chat-header">
+              <div className="chat-avatar">B</div>
+              <div>
+                <div className="chat-name">Bojan · Company Coach</div>
+                <div className="chat-status">● Online</div>
+              </div>
+            </div>
+            <div className="chat-body">
+              <div>
+                <div className="chat-msg bot">Ready for your team's session. Which of the 5 domains should we focus on today?</div>
+                <div className="chat-time">09:02</div>
+              </div>
+              <div style={{alignSelf:'flex-end'}}>
+                <div className="chat-msg user">Our facility management team keeps missing SLA targets with our cleaning vendor.</div>
+                <div className="chat-time" style={{textAlign:'right'}}>09:03</div>
+              </div>
+              <div>
+                <div className="chat-msg bot">Before renewing, pull the last two quarters of SLA breach data — that's your leverage in the vendor conversation.<span className="cursor"></span></div>
+                <div className="chat-time">09:03</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style={{textAlign: 'center', marginTop: '56px'}}>
+          <a href="mailto:bojan.sipovac@gmail.com" className="btn-primary" style={{fontSize: '18px', padding: '20px 52px'}}>Talk to Bojan →</a>
         </div>
       </section>
  
