@@ -116,6 +116,23 @@ const css = `
   .section-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 2.5px; text-transform: uppercase; color: var(--orange); margin-bottom: 12px; }
   .section-title { font-family: 'Space Grotesk', sans-serif; font-size: clamp(28px, 3.4vw, 42px); font-weight: 700; letter-spacing: -1.5px; line-height: 1.1; margin-bottom: 32px; max-width: 700px; }
   .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--gray2); border: 1px solid var(--gray2); }
+
+  /* SERVICES SPLIT (B2C / B2B) */
+  .services-split { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--gray2); border: 1px solid var(--gray2); }
+  .services-col { background: var(--black); padding: 32px; display: flex; flex-direction: column; }
+  .services-col.b2b { background: var(--gray1); }
+  .col-eyebrow { font-size: 10.5px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+  .col-heading { font-family: 'Space Grotesk', sans-serif; font-size: 21px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 8px; }
+  .col-desc { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 22px; }
+  .mini-service { display: flex; gap: 12px; padding: 11px 0; border-top: 1px solid var(--gray2); }
+  .mini-icon { font-size: 17px; flex-shrink: 0; width: 22px; }
+  .mini-name { font-family: 'Space Grotesk', sans-serif; font-size: 13.5px; font-weight: 600; margin-bottom: 2px; }
+  .mini-desc { font-size: 11.5px; color: var(--muted); line-height: 1.5; }
+  .offer-card { border-top: 1px solid var(--gray3); padding: 16px 0; }
+  .offer-name { font-family: 'Space Grotesk', sans-serif; font-size: 14.5px; font-weight: 600; margin-bottom: 4px; }
+  .offer-price { font-size: 11.5px; color: var(--orange); font-weight: 600; margin-bottom: 6px; }
+  .offer-desc { font-size: 12px; color: var(--muted); line-height: 1.55; }
+  .col-cta { margin-top: 24px; }
   .service-card { background: var(--black); padding: 22px 24px; transition: background 0.2s; position: relative; }
   .service-card:hover { background: var(--gray1); }
   .service-card.featured { background: var(--gray1); border: 1px solid rgba(255,85,0,0.3); margin: -1px; grid-column: span 3; }
@@ -265,43 +282,58 @@ export default function Home() {
       {/* SERVICES */}
       <section className="section" id="services">
         <div className="section-eyebrow">What I Do</div>
-        <h2 className="section-title">Seven domains. One expert.</h2>
-        <div className="services-grid">
-          <div className="service-card">
-            <div className="service-icon">⚡</div>
-            <div className="service-name">Strategic Sourcing</div>
-            <p className="service-desc">Category strategy, RFQ design, vendor evaluation frameworks, and savings realization. Built from real telecom-scale experience.</p>
+        <h2 className="section-title">Two ways to work with Fuentiva.</h2>
+        <div className="services-split">
+
+          <div className="services-col">
+            <div className="col-eyebrow">For Individuals</div>
+            <div className="col-heading">Personal Coaching</div>
+            <p className="col-desc">AI coaching 24/7, or live Quick Win sessions with Bojan — across sourcing, real estate, facility management, team leadership, and car fleet.</p>
+
+            <div className="mini-service">
+              <div className="mini-icon">🤖</div>
+              <div>
+                <div className="mini-name">AI Coaching — 99€/month</div>
+                <div className="mini-desc">Unlimited text & voice coaching via WhatsApp.</div>
+              </div>
+            </div>
+            <div className="mini-service">
+              <div className="mini-icon">⚡</div>
+              <div>
+                <div className="mini-name">Quick Win Sessions — from 25€</div>
+                <div className="mini-desc">15–30 min live with Bojan, for decisions that need real expertise, fast.</div>
+              </div>
+            </div>
+            <div className="mini-service">
+              <div className="mini-icon">📋</div>
+              <div>
+                <div className="mini-name">7 domains, one expert</div>
+                <div className="mini-desc">Sourcing, RE, FM, Car Fleet, Team Leadership, Public Procurement, AI implementation.</div>
+              </div>
+            </div>
+
+            <div className="col-cta"><a href="#coaching" className="btn-primary">Start AI Coaching</a></div>
           </div>
-          <div className="service-card">
-            <div className="service-icon">🏢</div>
-            <div className="service-name">Real Estate</div>
-            <p className="service-desc">Site acquisition, lease negotiation, portfolio optimization. Aligning real estate strategy with business operations at scale.</p>
+
+          <div className="services-col b2b">
+            <div className="col-eyebrow">For Teams & Companies</div>
+            <div className="col-heading">Corporate Programs</div>
+            <p className="col-desc">Bring Fuentiva's expertise to your whole team — flat-rate coaching access, or a live training session for a specific topic.</p>
+
+            <div className="offer-card">
+              <div className="offer-name">Team Subscription</div>
+              <div className="offer-price">Flat rate — priced by team size</div>
+              <div className="offer-desc">Give your whole procurement, RE/FM, or fleet team ongoing access to AI coaching, under one company account.</div>
+            </div>
+            <div className="offer-card">
+              <div className="offer-name">Corporate Training</div>
+              <div className="offer-price">Priced per engagement</div>
+              <div className="offer-desc">A live 30-minute session with Bojan for your team — team leadership, negotiation, or any of the 5 core domains.</div>
+            </div>
+
+            <div className="col-cta"><a href="mailto:bojan.sipovac@gmail.com" className="btn-ghost">Get in touch →</a></div>
           </div>
-          <div className="service-card">
-            <div className="service-icon">🔧</div>
-            <div className="service-name">Facility Management</div>
-            <p className="service-desc">FM strategy, vendor governance, SLA design, and OPEX control. From single sites to multi-country portfolios.</p>
-          </div>
-          <div className="service-card">
-            <div className="service-icon">🚗</div>
-            <div className="service-name">Car Fleet</div>
-            <p className="service-desc">Car Fleet procurement, TCO analysis, policy design, and vendor management. Optimizing cost and compliance across your vehicle assets.</p>
-          </div>
-          <div className="service-card">
-            <div className="service-icon">👥</div>
-            <div className="service-name">Team Leadership & Management</div>
-            <p className="service-desc">Building and scaling procurement teams. Organizational design, KPI frameworks, coaching managers to lead with clarity and results.</p>
-          </div>
-          <div className="service-card">
-            <div className="service-icon">🏛️</div>
-            <div className="service-name">Public Procurement</div>
-            <p className="service-desc">Deep expertise in public tender processes from Telekom Srbija. Compliance, strategy, and efficiency in regulated procurement environments.</p>
-          </div>
-          <div className="service-card featured">
-            <div className="service-icon">🤖</div>
-            <div className="service-name">AI in Procurement</div>
-            <p className="service-desc">Practical AI implementation for sourcing teams — from automated RFQ analysis to AI coaching agents. Not theory. Deployed systems that work in the real world of enterprise procurement.</p>
-          </div>
+
         </div>
       </section>
  
