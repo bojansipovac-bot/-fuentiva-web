@@ -163,12 +163,12 @@ const css = `
   .chat-time { font-size: 10px; color: var(--gray3); margin-top: 4px; }
  
   /* ABOUT */
-  .about-section { padding: 96px 48px; display: grid; grid-template-columns: minmax(360px, 420px) 1fr; gap: 60px; }
+  .about-section { padding: 150px 48px; display: grid; grid-template-columns: minmax(360px, 420px) 1fr; gap: 60px; }
   .about-name { font-family: 'Space Grotesk', sans-serif; font-size: 36px; font-weight: 700; letter-spacing: -1.5px; line-height: 1.1; margin-bottom: 14px; }
   .about-title { font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 700; letter-spacing: -0.5px; line-height: 1.25; color: var(--white); }
 
   .milestone-list { max-width: 780px; }
-  .milestone-item { display: flex; gap: 20px; align-items: baseline; padding: 13px 0; border-bottom: 1px solid var(--gray2); }
+  .milestone-item { display: flex; gap: 20px; align-items: baseline; padding: 19px 0; border-bottom: 1px solid var(--gray2); }
   .milestone-item:last-child { border-bottom: none; }
   .milestone-year { font-family: 'Space Grotesk', sans-serif; font-size: 12.5px; font-weight: 700; color: var(--orange); flex: 0 0 110px; }
   .milestone-role { font-size: 14px; color: var(--white); font-weight: 500; }
