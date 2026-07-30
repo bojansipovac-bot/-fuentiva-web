@@ -188,6 +188,29 @@ const css = `
   .cta-section h2 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(36px, 5vw, 58px); font-weight: 700; letter-spacing: -2px; line-height: 1.05; margin-bottom: 20px; }
   .cta-section p { font-size: 16px; color: var(--muted); margin-bottom: 44px; }
 
+  /* PRICING */
+  .pricing-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--gray2); border: 1px solid var(--gray2); }
+  .price-card { background: var(--black); padding: 28px 24px; display: flex; flex-direction: column; }
+  .price-card.featured { background: var(--gray1); border-top: 2px solid var(--orange); }
+  .price-tier { font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 700; letter-spacing: -0.3px; margin-bottom: 4px; }
+  .price-size { font-size: 11.5px; color: var(--muted); margin-bottom: 18px; }
+  .price-amount { font-family: 'Space Grotesk', sans-serif; font-size: 32px; font-weight: 700; letter-spacing: -1.5px; margin-bottom: 20px; }
+  .price-amount span { font-size: 13px; font-weight: 500; color: var(--muted); letter-spacing: 0; }
+  .price-feat { list-style: none; margin: 0 0 24px; padding: 0; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+  .price-feat li { font-size: 12.5px; color: var(--light); line-height: 1.45; padding-left: 18px; position: relative; }
+  .price-feat li::before { content: '→'; position: absolute; left: 0; color: var(--orange); }
+  .price-cta { font-family: 'Space Grotesk', sans-serif; font-size: 12.5px; font-weight: 600; color: var(--orange); text-decoration: none; border: 1px solid var(--gray3); padding: 11px; text-align: center; transition: all 0.2s; }
+  .price-cta:hover { background: var(--orange); color: #fff; border-color: var(--orange); }
+  .pricing-note { font-size: 12.5px; color: var(--muted); margin-top: 18px; }
+  .workshop-block { margin-top: 48px; display: grid; grid-template-columns: 1fr 1fr; gap: 48px; background: var(--gray1); border: 1px solid var(--gray2); padding: 40px; align-items: center; }
+  .workshop-block h3 { font-family: 'Space Grotesk', sans-serif; font-size: 26px; font-weight: 700; letter-spacing: -1px; margin: 8px 0 12px; }
+  .workshop-intro p { font-size: 13.5px; color: var(--muted); line-height: 1.6; }
+  .workshop-prices { display: flex; flex-direction: column; }
+  .wp-row { display: flex; justify-content: space-between; align-items: baseline; padding: 16px 0; border-bottom: 1px solid var(--gray2); }
+  .wp-row span { font-size: 13.5px; color: var(--light); }
+  .wp-row strong { font-family: 'Space Grotesk', sans-serif; font-size: 17px; font-weight: 700; color: var(--white); }
+  .wp-meta { font-size: 11.5px; color: var(--muted); padding: 14px 0 20px; }
+
   /* FOOTER */
   footer { border-top: 1px solid var(--gray2); padding: 32px 48px; display: flex; justify-content: space-between; align-items: center; }
   .footer-copy { font-size: 12px; color: var(--muted); }
@@ -209,6 +232,7 @@ export default function Home() {
           <li><a href="#offers">Offers</a></li>
           <li><a href="#coaching">Personal Coach</a></li>
           <li><a href="#company-coaching">Company Coach</a></li>
+          <li><a href="#pricing">Pricing</a></li>
           <li><a href="#about">About</a></li>
           <li><a href="#contact">Contact</a></li>
         </ul>
@@ -221,7 +245,7 @@ export default function Home() {
         <div>
           <div className="hero-eyebrow">Procurement Intelligence · AI-Powered</div>
           <h1>Where deep<br />expertise meets<br /><em>AI precision</em></h1>
-          <p className="hero-sub">26 years of sourcing, facility management, and real estate expertise — now amplified by AI. Built for professionals who need real answers, not generic advice.</p>
+          <p className="hero-sub">26 years of sourcing, facility management, real estate, and car fleet expertise — now amplified by AI. Built for professionals who need real answers, not generic advice.</p>
           <div className="hero-actions">
             <a href="#coaching" className="btn-primary">Start AI Coaching</a>
             <a href="#domains" className="btn-ghost">Explore services</a>
@@ -500,6 +524,74 @@ export default function Home() {
         </div>
         <div style={{textAlign: 'center', marginTop: '56px'}}>
           <a href="/login" className="btn-primary" style={{fontSize: '18px', padding: '20px 52px'}}>Let's start</a>
+        </div>
+      </section>
+
+      {/* PRICING (Corporate) */}
+      <section className="section" id="pricing">
+        <div className="section-eyebrow">Corporate Pricing</div>
+        <h2 className="section-title">Pricing for teams & companies.</h2>
+
+        <div className="pricing-grid">
+          <div className="price-card">
+            <div className="price-tier">Starter</div>
+            <div className="price-size">up to 5 users</div>
+            <div className="price-amount">€349<span> /mo</span></div>
+            <ul className="price-feat">
+              <li>Unlimited AI coaching, 24/7</li>
+              <li>1 live group session / month</li>
+              <li>One company account</li>
+            </ul>
+            <a href="#contact" className="price-cta">Book a scoping call</a>
+          </div>
+          <div className="price-card featured">
+            <div className="price-tier">Growth</div>
+            <div className="price-size">up to 15 users</div>
+            <div className="price-amount">€799<span> /mo</span></div>
+            <ul className="price-feat">
+              <li>Unlimited AI coaching, 24/7</li>
+              <li>2 live group sessions / month</li>
+              <li>One company account</li>
+            </ul>
+            <a href="#contact" className="price-cta">Book a scoping call</a>
+          </div>
+          <div className="price-card">
+            <div className="price-tier">Scale</div>
+            <div className="price-size">up to 30 users</div>
+            <div className="price-amount">€1,490<span> /mo</span></div>
+            <ul className="price-feat">
+              <li>Unlimited AI coaching, 24/7</li>
+              <li>4 live group sessions / month</li>
+              <li>One company account</li>
+            </ul>
+            <a href="#contact" className="price-cta">Book a scoping call</a>
+          </div>
+          <div className="price-card">
+            <div className="price-tier">Enterprise</div>
+            <div className="price-size">30+ users</div>
+            <div className="price-amount">Let's talk</div>
+            <ul className="price-feat">
+              <li>Everything in Scale</li>
+              <li>Custom live session volume</li>
+              <li>Tailored to your organization</li>
+            </ul>
+            <a href="#contact" className="price-cta">Book a scoping call</a>
+          </div>
+        </div>
+        <p className="pricing-note">Annual plans — 2 months free. All prices exclude VAT.</p>
+
+        <div className="workshop-block">
+          <div className="workshop-intro">
+            <div className="col-eyebrow">On-site</div>
+            <h3>On-site Workshop</h3>
+            <p>A hands-on session at your offices, built around your team's real challenges — sourcing, facility management, team leadership, negotiation, or fleet.</p>
+          </div>
+          <div className="workshop-prices">
+            <div className="wp-row"><span>Half-day (4h), on-site</span><strong>from €1,800</strong></div>
+            <div className="wp-row"><span>Full-day (8h), on-site</span><strong>from €3,200</strong></div>
+            <div className="wp-meta">Tailored to your case · Travel billed separately · Excl. VAT</div>
+            <a href="#contact" className="price-cta">Book a scoping call</a>
+          </div>
         </div>
       </section>
 
