@@ -163,7 +163,7 @@ const css = `
   .chat-time { font-size: 10px; color: var(--gray3); margin-top: 4px; }
  
   /* ABOUT */
-  .about-section { padding: 96px 48px; display: grid; grid-template-columns: 1fr 2fr; gap: 80px; }
+  .about-section { padding: 96px 48px; display: grid; grid-template-columns: minmax(360px, 420px) 1fr; gap: 60px; }
   .about-name { font-family: 'Space Grotesk', sans-serif; font-size: 36px; font-weight: 700; letter-spacing: -1.5px; line-height: 1.1; margin-bottom: 14px; }
   .about-title { font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 700; letter-spacing: -0.5px; line-height: 1.25; color: var(--white); }
 
@@ -506,8 +506,8 @@ export default function Home() {
       {/* ABOUT */}
       <section className="about-section" id="about">
         <div>
-          <div className="about-name">Bojan<br />Šipovac</div>
-          <div className="about-title">26 years, built<br />step by step.</div>
+          <div className="about-name">Bojan Šipovac</div>
+          <div className="about-title">26 years, built step by step.</div>
         </div>
         <div className="milestone-list">
           <div className="milestone-item">
