@@ -163,7 +163,7 @@ const css = `
   .chat-time { font-size: 10px; color: var(--gray3); margin-top: 4px; }
 
   /* ABOUT */
-  .about-section { padding: 150px 48px; display: grid; grid-template-columns: minmax(360px, 420px) 1fr; gap: 60px; }
+  .about-section { padding: 80px 48px; display: grid; grid-template-columns: minmax(360px, 420px) 1fr; gap: 60px; }
   .about-name { font-family: 'Space Grotesk', sans-serif; font-size: 36px; font-weight: 700; letter-spacing: -1.5px; line-height: 1.1; margin-bottom: 14px; }
   .about-title { font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 700; letter-spacing: -0.5px; line-height: 1.25; color: var(--white); }
 
@@ -212,22 +212,22 @@ const css = `
   .wp-meta { font-size: 11.5px; color: var(--muted); padding: 14px 0 20px; }
 
   /* PRICING — COMPACT (fit one screen, scoped to #pricing only) */
-  #pricing { padding: 24px 48px 18px; }
-  #pricing .section-title { margin-bottom: 14px; }
-  #pricing .price-card { padding: 16px 18px; }
-  #pricing .price-size { margin-bottom: 8px; }
-  #pricing .price-amount { font-size: 24px; margin-bottom: 10px; }
-  #pricing .price-feat { gap: 5px; margin: 0 0 12px; }
-  #pricing .price-feat li { font-size: 11px; padding-left: 16px; }
-  #pricing .price-cta { padding: 7px; font-size: 11px; }
-  #pricing .pricing-note { margin-top: 8px; font-size: 10.5px; }
-  #pricing .workshop-block { margin-top: 16px; padding: 18px 24px; gap: 24px; }
-  #pricing .workshop-block h3 { font-size: 18px; margin: 3px 0 5px; }
-  #pricing .workshop-intro p { font-size: 11.5px; line-height: 1.4; }
-  #pricing .wp-row { padding: 7px 0; }
-  #pricing .wp-row span { font-size: 12px; }
-  #pricing .wp-row strong { font-size: 14px; }
-  #pricing .wp-meta { padding: 6px 0 8px; font-size: 10.5px; }
+  #pricing { padding: 28px 48px 20px; }
+  #pricing .section-title { margin-bottom: 18px; }
+  #pricing .price-card { padding: 20px 20px; }
+  #pricing .price-size { margin-bottom: 10px; }
+  #pricing .price-amount { font-size: 28px; margin-bottom: 14px; }
+  #pricing .price-feat { gap: 8px; margin: 0 0 16px; }
+  #pricing .price-feat li { font-size: 12px; padding-left: 17px; }
+  #pricing .price-cta { padding: 9px; font-size: 12px; }
+  #pricing .pricing-note { margin-top: 12px; font-size: 11.5px; }
+  #pricing .workshop-block { margin-top: 24px; padding: 26px 30px; gap: 32px; }
+  #pricing .workshop-block h3 { font-size: 21px; margin: 4px 0 8px; }
+  #pricing .workshop-intro p { font-size: 12.5px; line-height: 1.5; }
+  #pricing .wp-row { padding: 9px 0; }
+  #pricing .wp-row span { font-size: 12.5px; }
+  #pricing .wp-row strong { font-size: 15px; }
+  #pricing .wp-meta { padding: 8px 0 10px; font-size: 11px; }
 
   /* PRICING — RESPONSIVE */
   @media (max-width: 1100px) {
