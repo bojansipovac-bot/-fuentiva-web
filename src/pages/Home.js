@@ -548,7 +548,7 @@ export default function Home() {
 
       {/* CTA */}
       <section className="cta-section" id="contact">
-        <h2>Ready to upgrade<br />your sourcing game?</h2>
+        <h2>Ready to upgrade<br />your current skills?</h2>
         <p>Book a free 15-minute call — we'll pinpoint where you (or your team) are stuck and whether coaching is the right fit. No pitch, no obligation.</p>
         <a href="https://calendly.com/bojan-sipovac/intro-call-15-min" target="_blank" rel="noreferrer" className="btn-primary" style={{fontSize:'15px', padding:'16px 36px'}}>Book intro call →</a>
         <p style={{fontSize:'13px', color:'var(--muted)', marginTop:'24px', marginBottom:0}}>Have a specific problem to solve right now? A <a href="#offers" style={{color:'var(--orange)', textDecoration:'none'}}>paid Quick Win session</a> is the faster route.</p>
