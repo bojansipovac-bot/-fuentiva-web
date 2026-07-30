@@ -46,6 +46,9 @@ const css = `
   .nav-cta { background: var(--orange); color: #fff; font-family: 'Space Grotesk', sans-serif; font-size: 13.5px; font-weight: 600; padding: 9px 22px; border: none; cursor: pointer; text-decoration: none; transition: background 0.2s; }
   .nav-cta:hover { background: var(--orange2); }
 
+  /* Prevent the fixed nav from overlapping section headings on anchor jump */
+  #domains, #offers, #coaching, #company-coaching, #pricing, #about, #contact { scroll-margin-top: 84px; }
+
   /* HERO */
   .hero-wrap {
     min-height: 100vh;
