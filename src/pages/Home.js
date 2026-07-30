@@ -211,6 +211,24 @@ const css = `
   .wp-row strong { font-family: 'Space Grotesk', sans-serif; font-size: 17px; font-weight: 700; color: var(--white); }
   .wp-meta { font-size: 11.5px; color: var(--muted); padding: 14px 0 20px; }
 
+  /* PRICING — COMPACT (fit one screen, scoped to #pricing only) */
+  #pricing { padding: 24px 48px 18px; }
+  #pricing .section-title { margin-bottom: 14px; }
+  #pricing .price-card { padding: 16px 18px; }
+  #pricing .price-size { margin-bottom: 8px; }
+  #pricing .price-amount { font-size: 24px; margin-bottom: 10px; }
+  #pricing .price-feat { gap: 5px; margin: 0 0 12px; }
+  #pricing .price-feat li { font-size: 11px; padding-left: 16px; }
+  #pricing .price-cta { padding: 7px; font-size: 11px; }
+  #pricing .pricing-note { margin-top: 8px; font-size: 10.5px; }
+  #pricing .workshop-block { margin-top: 16px; padding: 18px 24px; gap: 24px; }
+  #pricing .workshop-block h3 { font-size: 18px; margin: 3px 0 5px; }
+  #pricing .workshop-intro p { font-size: 11.5px; line-height: 1.4; }
+  #pricing .wp-row { padding: 7px 0; }
+  #pricing .wp-row span { font-size: 12px; }
+  #pricing .wp-row strong { font-size: 14px; }
+  #pricing .wp-meta { padding: 6px 0 8px; font-size: 10.5px; }
+
   /* PRICING — RESPONSIVE */
   @media (max-width: 1100px) {
     .pricing-grid { grid-template-columns: repeat(2, 1fr); }
