@@ -1,4 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
+
+// TODO: replace with your actual Railway backend URL (same one used for
+// Stripe checkout / other API calls elsewhere in the app)
+const BACKEND_URL = 'https://procurement-coach-production.up.railway.app';
 
 const styles = {
   '@import': 'https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500&display=swap',
@@ -47,7 +51,28 @@ const css = `
   .nav-cta:hover { background: var(--orange2); }
 
   /* Prevent the fixed nav from overlapping section headings on anchor jump */
-  #domains, #offers, #coaching, #company-coaching, #pricing, #about, #contact { scroll-margin-top: 84px; }
+  #domains, #offers, #coaching, #company-coaching, #pricing, #about, #contact, #retainer-inquiry { scroll-margin-top: 84px; }
+
+  /* SOURCING RETAINER FORM */
+  .retainer-intro { max-width: 640px; margin-bottom: 32px; }
+  .retainer-intro p { font-size: 14px; color: var(--muted); line-height: 1.6; }
+  .retainer-form { max-width: 640px; display: flex; flex-direction: column; gap: 18px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .form-field { display: flex; flex-direction: column; gap: 6px; }
+  .form-field label { font-size: 12px; color: var(--muted); font-weight: 500; }
+  .form-field input, .form-field textarea, .form-field select {
+    background: var(--gray1); border: 1px solid var(--gray3); color: var(--white);
+    padding: 10px 12px; font-size: 13.5px; font-family: 'Inter', sans-serif;
+  }
+  .form-field input:focus, .form-field textarea:focus, .form-field select:focus { outline: none; border-color: var(--orange); }
+  .form-field textarea { resize: vertical; min-height: 90px; }
+  .form-submit { margin-top: 8px; align-self: flex-start; }
+  .form-status { font-size: 12.5px; margin-top: 12px; }
+  .form-status.success { color: #4ADE80; }
+  .form-status.error { color: var(--orange); }
+  @media (max-width: 640px) {
+    .form-row { grid-template-columns: 1fr; }
+  }
 
   /* HERO */
   .hero-wrap {
@@ -253,6 +278,100 @@ const css = `
   .footer-links a:hover { color: var(--white); }
 `;
 
+function RetainerInquiryForm() {
+  const [form, setForm] = useState({
+    name: '', company: '', email: '', phone: '',
+    challenge: '', spend_range: '', urgency: '', preferred_cadence: ''
+  });
+  const [status, setStatus] = useState(null); // null | 'sending' | 'success' | 'error'
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setStatus('sending');
+    try {
+      const res = await fetch(`${BACKEND_URL}/retainer-inquiry`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      });
+      if (res.ok) {
+        setStatus('success');
+        setForm({ name: '', company: '', email: '', phone: '', challenge: '', spend_range: '', urgency: '', preferred_cadence: '' });
+      } else {
+        setStatus('error');
+      }
+    } catch (err) {
+      setStatus('error');
+    }
+  };
+
+  return (
+    <form className="retainer-form" onSubmit={handleSubmit}>
+      <div className="form-row">
+        <div className="form-field">
+          <label>Name *</label>
+          <input type="text" name="name" value={form.name} onChange={handleChange} required />
+        </div>
+        <div className="form-field">
+          <label>Company *</label>
+          <input type="text" name="company" value={form.company} onChange={handleChange} required />
+        </div>
+      </div>
+      <div className="form-row">
+        <div className="form-field">
+          <label>Email *</label>
+          <input type="email" name="email" value={form.email} onChange={handleChange} required />
+        </div>
+        <div className="form-field">
+          <label>Phone (optional)</label>
+          <input type="tel" name="phone" value={form.phone} onChange={handleChange} />
+        </div>
+      </div>
+      <div className="form-field">
+        <label>What's the challenge you'd like help with? *</label>
+        <textarea name="challenge" value={form.challenge} onChange={handleChange} required placeholder="e.g. our fleet contract renews in 3 months and we're not sure we're getting a fair deal..." />
+      </div>
+      <div className="form-row">
+        <div className="form-field">
+          <label>Approx. annual spend in this area (optional)</label>
+          <select name="spend_range" value={form.spend_range} onChange={handleChange}>
+            <option value="">Prefer not to say</option>
+            <option value="<50k">Under €50k</option>
+            <option value="50-200k">€50k - €200k</option>
+            <option value="200k+">€200k+</option>
+          </select>
+        </div>
+        <div className="form-field">
+          <label>Urgency (optional)</label>
+          <select name="urgency" value={form.urgency} onChange={handleChange}>
+            <option value="">Not sure yet</option>
+            <option value="immediate">Immediate</option>
+            <option value="within_month">Within a month</option>
+            <option value="exploring">Just exploring</option>
+          </select>
+        </div>
+      </div>
+      <div className="form-field">
+        <label>Preferred cadence (optional)</label>
+        <select name="preferred_cadence" value={form.preferred_cadence} onChange={handleChange}>
+          <option value="">Not sure — recommend one</option>
+          <option value="standard">Standard (3x/week)</option>
+          <option value="intensive">Intensive (daily)</option>
+        </select>
+      </div>
+      <button type="submit" className="btn-primary form-submit" disabled={status === 'sending'}>
+        {status === 'sending' ? 'Sending...' : 'Send my request'}
+      </button>
+      {status === 'success' && <p className="form-status success">Thanks — check your email shortly for a tailored proposal.</p>}
+      {status === 'error' && <p className="form-status error">Something went wrong. Please try again or email us directly.</p>}
+    </form>
+  );
+}
+
 export default function Home() {
   return (
     <>
@@ -433,6 +552,11 @@ export default function Home() {
               <div className="offer-name">Corporate Training</div>
               <div className="offer-price">Priced per engagement</div>
               <div className="offer-desc">A live 30-minute session with Bojan for your team — team leadership, negotiation, or any of the 5 core domains.</div>
+            </div>
+            <div className="offer-card">
+              <div className="offer-name">Sourcing Retainer</div>
+              <div className="offer-price">From €3,000 — 2-month minimum</div>
+              <div className="offer-desc">Dedicated, senior sourcing support on a fixed weekly schedule. <a href="#retainer-inquiry" style={{color:'var(--orange)', textDecoration:'none'}}>Tell us what you need →</a></div>
             </div>
 
             <div className="col-cta"><a href="#company-coaching" className="btn-primary">Start Corporate Session</a></div>
@@ -627,6 +751,16 @@ export default function Home() {
             <a href="#contact" className="price-cta">Book a scoping call</a>
           </div>
         </div>
+      </section>
+
+      {/* SOURCING RETAINER INQUIRY */}
+      <section className="section" id="retainer-inquiry">
+        <div className="section-eyebrow">Sourcing Retainer</div>
+        <h2 className="section-title">Tell us what you need.</h2>
+        <div className="retainer-intro">
+          <p>Describe your sourcing challenge below and we'll come back with a tailored proposal — which tier fits, and why — sent straight to your inbox.</p>
+        </div>
+        <RetainerInquiryForm />
       </section>
 
       {/* ABOUT */}
