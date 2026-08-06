@@ -158,32 +158,39 @@ const css = `
     .coaching-section { padding: 48px 20px; }
   }
 
-  /* PRICING — TWO COLUMN */
-  .pricing-split { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--gray2); border: 1px solid var(--gray2); }
-  .pricing-col { background: var(--black); padding: 32px; display: flex; flex-direction: column; }
-  .pricing-col.b2b { background: var(--gray1); }
-  .col-eyebrow { font-size: 10.5px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 18px; }
+  /* PRICING — CARD GRID */
+  .pricing-group { margin-bottom: 26px; }
+  .pricing-group:last-child { margin-bottom: 0; }
+  .pricing-group-label { font-size: 10.5px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
 
-  .price-line { display: flex; justify-content: space-between; align-items: baseline; padding: 16px 0; border-top: 1px solid var(--gray2); gap: 16px; }
-  .price-line:first-of-type { border-top: none; }
-  .price-line-left strong { font-family: 'Space Grotesk', sans-serif; font-size: 14.5px; font-weight: 600; display: block; margin-bottom: 3px; }
-  .price-line-left p { font-size: 12px; color: var(--muted); line-height: 1.5; }
-  .price-line-right { font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 700; color: var(--orange); white-space: nowrap; text-align: right; }
-  .price-line-right span { display: block; font-size: 10.5px; font-weight: 500; color: var(--muted); margin-top: 2px; }
+  .pricing-cards-b2c { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--gray2); border: 1px solid var(--gray2); }
+  .pricing-cards-b2b { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--gray2); border: 1px solid var(--gray2); }
+  .pricing-card { background: var(--black); padding: 16px 15px; display: flex; flex-direction: column; }
+  .pricing-card.b2b { background: var(--gray1); }
+  .pricing-card-name { font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+  .pricing-card-desc { font-size: 10.5px; color: var(--muted); line-height: 1.4; margin-bottom: 10px; }
+  .pricing-card-price { font-family: 'Space Grotesk', sans-serif; font-size: 16px; font-weight: 700; color: var(--orange); margin-top: auto; }
+  .pricing-card-price span { display: block; font-size: 10px; font-weight: 500; color: var(--muted); margin-top: 2px; }
 
-  .tier-mini { display: flex; justify-content: space-between; font-size: 12.5px; padding: 6px 0; color: var(--light); }
+  .tier-list { display: flex; flex-direction: column; gap: 3px; margin-top: auto; }
+  .tier-mini { display: flex; justify-content: space-between; font-size: 10.5px; padding: 1px 0; color: var(--light); }
   .tier-mini strong { color: var(--white); font-weight: 600; }
 
-  .col-cta { margin-top: auto; padding-top: 24px; }
-
   /* Retainer accordion */
-  .retainer-toggle { background: none; border: 1px solid var(--gray3); color: var(--orange); font-family: 'Space Grotesk', sans-serif; font-size: 12.5px; font-weight: 600; padding: 10px 16px; cursor: pointer; margin-top: 8px; transition: all 0.2s; }
+  .retainer-toggle { background: none; border: 1px solid var(--gray3); color: var(--orange); font-family: 'Space Grotesk', sans-serif; font-size: 10.5px; font-weight: 600; padding: 6px 10px; cursor: pointer; margin-top: 10px; align-self: flex-start; transition: all 0.2s; }
   .retainer-toggle:hover { background: var(--orange); color: #fff; border-color: var(--orange); }
-  .retainer-panel { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
-  .retainer-panel.open { max-height: 900px; }
+  .retainer-panel-wrap { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
+  .retainer-panel-wrap.open { max-height: 900px; margin-top: 18px; }
 
-  .vat-note { font-size: 11px; color: var(--muted); margin-top: 16px; }
-  @media (max-width: 860px) { .pricing-split { grid-template-columns: 1fr; } }
+  .pricing-cta-wrap { text-align: center; margin-top: 24px; }
+
+  .vat-note { font-size: 11px; color: var(--muted); margin: 0 0 24px; }
+
+  @media (max-width: 1000px) { .pricing-cards-b2b { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 640px) {
+    .pricing-cards-b2c { grid-template-columns: 1fr; }
+    .pricing-cards-b2b { grid-template-columns: 1fr; }
+  }
 
   /* SOURCING RETAINER FORM (used inside the accordion panel above) */
   .retainer-form { max-width: 100%; display: flex; flex-direction: column; gap: 14px; padding-top: 20px; }
@@ -202,24 +209,8 @@ const css = `
   .form-status.error { color: var(--orange); }
   @media (max-width: 640px) { .form-row { grid-template-columns: 1fr; } }
 
-  /* PRICING — COMPACT, FIT ONE SCREEN */
   #pricing { padding: 32px 48px 28px; }
   #pricing .section-title { margin-bottom: 4px !important; }
-  #pricing .vat-note { margin: 0 0 20px !important; }
-  #pricing .pricing-col { padding: 20px 24px; }
-  #pricing .col-eyebrow { margin-bottom: 10px; }
-  #pricing .price-line { padding: 9px 0; }
-  #pricing .price-line-left strong { font-size: 13.5px; margin-bottom: 1px; }
-  #pricing .price-line-left p { font-size: 11px; line-height: 1.35; }
-  #pricing .price-line-right { font-size: 14px; }
-  #pricing .tier-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 14px; margin-top: 6px; }
-  #pricing .tier-mini { font-size: 11px; padding: 2px 0; }
-  #pricing .col-cta { padding-top: 12px; }
-  #pricing .retainer-toggle { padding: 6px 12px; font-size: 11px; margin-top: 4px; }
-  #pricing .retainer-panel.open { max-height: 700px; }
-  @media (max-width: 640px) {
-    #pricing .tier-grid { grid-template-columns: 1fr; }
-  }
 
   /* ABOUT — "How I Work" */
   .about-section { padding: 56px 48px; display: flex; align-items: baseline; gap: 40px; flex-wrap: wrap; border-top: 1px solid var(--gray2); }
@@ -453,74 +444,68 @@ export default function Home() {
       <section className="section" id="pricing">
         <div className="section-eyebrow">Pricing</div>
         <h2 className="section-title" style={{marginBottom:'8px'}}>Straightforward pricing.</h2>
-        <p className="vat-note" style={{margin:'0 0 36px'}}>Prices excl. VAT.</p>
+        <p className="vat-note">Prices excl. VAT.</p>
 
-        <div className="pricing-split">
-          <div className="pricing-col">
-            <div className="col-eyebrow">For Individuals</div>
-
-            <div className="price-line">
-              <div className="price-line-left"><strong>AI Coaching</strong><p>Unlimited WhatsApp coaching, text &amp; voice.</p></div>
-              <div className="price-line-right">€99<span>/mo</span></div>
+        <div className="pricing-group">
+          <div className="pricing-group-label">For Individuals</div>
+          <div className="pricing-cards-b2c">
+            <div className="pricing-card">
+              <div className="pricing-card-name">AI Coaching</div>
+              <p className="pricing-card-desc">Unlimited WhatsApp coaching, text &amp; voice.</p>
+              <div className="pricing-card-price">€99<span>/mo</span></div>
             </div>
-            <div className="price-line">
-              <div className="price-line-left">
-                <strong>Quick Win Session</strong>
-                <p>Live with Bojan, for decisions that can't wait.</p>
-                <div className="tier-grid">
-                  <div className="tier-mini"><span>15 min</span><strong>€25</strong></div>
-                  <div className="tier-mini"><span>20 min</span><strong>€28</strong></div>
-                  <div className="tier-mini"><span>25 min</span><strong>€31</strong></div>
-                  <div className="tier-mini"><span>30 min</span><strong>€34</strong></div>
-                </div>
+            <div className="pricing-card">
+              <div className="pricing-card-name">Quick Win Session</div>
+              <p className="pricing-card-desc">Live with Bojan, for decisions that can't wait.</p>
+              <div className="tier-list">
+                <div className="tier-mini"><span>15 min</span><strong>€25</strong></div>
+                <div className="tier-mini"><span>20 min</span><strong>€28</strong></div>
+                <div className="tier-mini"><span>25 min</span><strong>€31</strong></div>
+                <div className="tier-mini"><span>30 min</span><strong>€34</strong></div>
               </div>
             </div>
+          </div>
+          <div className="pricing-cta-wrap"><a href="/login" className="btn-primary">Start AI Coaching</a></div>
+        </div>
 
-            <div className="col-cta"><a href="/login" className="btn-primary">Start AI Coaching</a></div>
+        <div className="pricing-group">
+          <div className="pricing-group-label">For Teams &amp; Companies</div>
+          <div className="pricing-cards-b2b">
+            <div className="pricing-card b2b">
+              <div className="pricing-card-name">Team Subscription</div>
+              <p className="pricing-card-desc">Unlimited AI coaching + live group sessions, one company account.</p>
+              <div className="tier-list">
+                <div className="tier-mini"><span>Starter · 5</span><strong>€349/mo</strong></div>
+                <div className="tier-mini"><span>Growth · 15</span><strong>€799/mo</strong></div>
+                <div className="tier-mini"><span>Scale · 30</span><strong>€1,490/mo</strong></div>
+                <div className="tier-mini"><span>Enterprise</span><strong>Let's talk</strong></div>
+              </div>
+            </div>
+            <div className="pricing-card b2b">
+              <div className="pricing-card-name">On-site Workshop</div>
+              <p className="pricing-card-desc">Half-day (4h) / full-day (8h), built around your team's real challenges.</p>
+              <div className="pricing-card-price">€1,800<span>–€3,200</span></div>
+            </div>
+            <div className="pricing-card b2b">
+              <div className="pricing-card-name">Sourcing Retainer</div>
+              <p className="pricing-card-desc">Dedicated senior sourcing support, fixed weekly schedule, 2-month minimum.</p>
+              <div className="pricing-card-price">€3,000<span>–€5,000</span></div>
+              <button type="button" className="retainer-toggle" onClick={() => setRetainerOpen(!retainerOpen)}>
+                {retainerOpen ? 'Hide form' : 'Get a tailored quote'}
+              </button>
+            </div>
+            <div className="pricing-card b2b">
+              <div className="pricing-card-name">Automation Scripts</div>
+              <p className="pricing-card-desc">A custom script or bot for one specific manual task — delivered as ready-to-use files.</p>
+              <div className="pricing-card-price">from €750</div>
+            </div>
           </div>
 
-          <div className="pricing-col b2b">
-            <div className="col-eyebrow">For Teams &amp; Companies</div>
-
-            <div className="price-line">
-              <div className="price-line-left">
-                <strong>Team Subscription</strong>
-                <p>Unlimited AI coaching + live group sessions, one company account.</p>
-                <div className="tier-grid">
-                  <div className="tier-mini"><span>Starter · up to 5</span><strong>€349/mo</strong></div>
-                  <div className="tier-mini"><span>Growth · up to 15</span><strong>€799/mo</strong></div>
-                  <div className="tier-mini"><span>Scale · up to 30</span><strong>€1,490/mo</strong></div>
-                  <div className="tier-mini"><span>Enterprise · 30+</span><strong>Let's talk</strong></div>
-                </div>
-              </div>
-            </div>
-
-            <div className="price-line">
-              <div className="price-line-left"><strong>On-site Workshop</strong><p>Half-day (4h) / full-day (8h), built around your team's real challenges.</p></div>
-              <div className="price-line-right">€1,800<span>–€3,200</span></div>
-            </div>
-
-            <div className="price-line">
-              <div className="price-line-left">
-                <strong>Sourcing Retainer</strong>
-                <p>Dedicated senior sourcing support, fixed weekly schedule, 2-month minimum.</p>
-                <button type="button" className="retainer-toggle" onClick={() => setRetainerOpen(!retainerOpen)}>
-                  {retainerOpen ? 'Hide form' : 'Get a tailored quote'}
-                </button>
-                <div className={`retainer-panel${retainerOpen ? ' open' : ''}`}>
-                  <RetainerInquiryForm />
-                </div>
-              </div>
-              <div className="price-line-right">€3,000<span>–€5,000</span></div>
-            </div>
-
-            <div className="price-line">
-              <div className="price-line-left"><strong>Automation Scripts</strong><p>A custom script or bot for one specific manual task — delivered as ready-to-use files.</p></div>
-              <div className="price-line-right">from €750</div>
-            </div>
-
-            <div className="col-cta"><a href="#contact" className="btn-primary">Book a scoping call</a></div>
+          <div className={`retainer-panel-wrap${retainerOpen ? ' open' : ''}`}>
+            <RetainerInquiryForm />
           </div>
+
+          <div className="pricing-cta-wrap"><a href="#contact" className="btn-primary">Book a scoping call</a></div>
         </div>
       </section>
 
