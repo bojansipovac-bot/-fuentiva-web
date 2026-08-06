@@ -202,6 +202,25 @@ const css = `
   .form-status.error { color: var(--orange); }
   @media (max-width: 640px) { .form-row { grid-template-columns: 1fr; } }
 
+  /* PRICING — COMPACT, FIT ONE SCREEN */
+  #pricing { padding: 32px 48px 28px; }
+  #pricing .section-title { margin-bottom: 4px !important; }
+  #pricing .vat-note { margin: 0 0 20px !important; }
+  #pricing .pricing-col { padding: 20px 24px; }
+  #pricing .col-eyebrow { margin-bottom: 10px; }
+  #pricing .price-line { padding: 9px 0; }
+  #pricing .price-line-left strong { font-size: 13.5px; margin-bottom: 1px; }
+  #pricing .price-line-left p { font-size: 11px; line-height: 1.35; }
+  #pricing .price-line-right { font-size: 14px; }
+  #pricing .tier-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 14px; margin-top: 6px; }
+  #pricing .tier-mini { font-size: 11px; padding: 2px 0; }
+  #pricing .col-cta { padding-top: 12px; }
+  #pricing .retainer-toggle { padding: 6px 12px; font-size: 11px; margin-top: 4px; }
+  #pricing .retainer-panel.open { max-height: 700px; }
+  @media (max-width: 640px) {
+    #pricing .tier-grid { grid-template-columns: 1fr; }
+  }
+
   /* ABOUT — "How I Work" */
   .about-section { padding: 56px 48px; display: flex; align-items: baseline; gap: 40px; flex-wrap: wrap; border-top: 1px solid var(--gray2); }
   .about-name { font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 700; letter-spacing: -0.5px; white-space: nowrap; }
@@ -448,7 +467,7 @@ export default function Home() {
               <div className="price-line-left">
                 <strong>Quick Win Session</strong>
                 <p>Live with Bojan, for decisions that can't wait.</p>
-                <div style={{marginTop:'10px'}}>
+                <div className="tier-grid">
                   <div className="tier-mini"><span>15 min</span><strong>€25</strong></div>
                   <div className="tier-mini"><span>20 min</span><strong>€28</strong></div>
                   <div className="tier-mini"><span>25 min</span><strong>€31</strong></div>
@@ -467,7 +486,7 @@ export default function Home() {
               <div className="price-line-left">
                 <strong>Team Subscription</strong>
                 <p>Unlimited AI coaching + live group sessions, one company account.</p>
-                <div style={{marginTop:'10px'}}>
+                <div className="tier-grid">
                   <div className="tier-mini"><span>Starter · up to 5</span><strong>€349/mo</strong></div>
                   <div className="tier-mini"><span>Growth · up to 15</span><strong>€799/mo</strong></div>
                   <div className="tier-mini"><span>Scale · up to 30</span><strong>€1,490/mo</strong></div>
