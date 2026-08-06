@@ -1,10 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fuentiva — Redesign Demo</title>
-<style>
+import React, { useState } from 'react';
+
+// Real Railway backend URL used for Stripe checkout / Retainer intake / other API calls
+const BACKEND_URL = 'https://procurement-coach-production.up.railway.app';
+
+const css = `
   @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500&display=swap');
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -27,13 +26,6 @@
     color: var(--white);
     font-family: 'Inter', sans-serif;
     -webkit-font-smoothing: antialiased;
-  }
-
-  /* DEMO BANNER */
-  .demo-banner {
-    background: var(--orange); color: #fff; text-align: center;
-    font-family: 'Space Grotesk', sans-serif; font-size: 12.5px; font-weight: 600;
-    letter-spacing: 0.5px; padding: 8px; position: relative; z-index: 200;
   }
 
   /* NAV */
@@ -70,7 +62,7 @@
   #domains, #coaching, #pricing, #about, #contact { scroll-margin-top: 84px; }
 
   /* HERO */
-  .hero-wrap { min-height: 92vh; display: flex; flex-direction: column; }
+  .hero-wrap { min-height: 88vh; display: flex; flex-direction: column; }
   .hero {
     flex: 1; display: grid; grid-template-columns: 1fr 1fr;
     align-items: center; gap: 60px; padding: 64px 48px 32px;
@@ -85,12 +77,9 @@
   .hero-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 2.5px; text-transform: uppercase; color: var(--orange); margin-bottom: 24px; }
   .hero h1 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(38px, 5vw, 60px); font-weight: 700; line-height: 1.08; letter-spacing: -2px; margin-bottom: 24px; }
   .hero h1 em { font-style: normal; color: var(--orange); }
-  .hero-sub { font-size: 16px; color: var(--light); line-height: 1.7; max-width: 440px; margin-bottom: 40px; }
-  .hero-actions { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+  .hero-sub { font-size: 16px; color: var(--light); line-height: 1.7; max-width: 440px; }
   .btn-primary { background: var(--orange); color: #fff; font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 600; padding: 14px 28px; border: none; cursor: pointer; text-decoration: none; transition: background 0.2s; display: inline-block; }
   .btn-primary:hover { background: var(--orange2); }
-  .btn-ghost { color: var(--light); font-size: 14px; font-weight: 500; text-decoration: none; border-bottom: 1px solid var(--gray3); padding-bottom: 2px; transition: color 0.2s; }
-  .btn-ghost:hover { color: var(--white); }
 
   .ai-panel { background: var(--gray1); border: 1px solid var(--gray2); }
   .panel-header { display: flex; align-items: center; gap: 8px; padding: 14px 20px; border-bottom: 1px solid var(--gray2); background: var(--gray2); }
@@ -190,24 +179,30 @@
   /* Retainer accordion */
   .retainer-toggle { background: none; border: 1px solid var(--gray3); color: var(--orange); font-family: 'Space Grotesk', sans-serif; font-size: 12.5px; font-weight: 600; padding: 10px 16px; cursor: pointer; margin-top: 8px; transition: all 0.2s; }
   .retainer-toggle:hover { background: var(--orange); color: #fff; border-color: var(--orange); }
-  .retainer-panel { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
-  .retainer-panel.open { max-height: 600px; }
-  .retainer-form { padding-top: 20px; display: flex; flex-direction: column; gap: 14px; }
-  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-  .form-field { display: flex; flex-direction: column; gap: 5px; }
-  .form-field label { font-size: 11.5px; color: var(--muted); font-weight: 500; }
-  .form-field input, .form-field textarea {
-    background: var(--gray2); border: 1px solid var(--gray3); color: var(--white);
-    padding: 9px 11px; font-size: 13px; font-family: 'Inter', sans-serif;
-  }
-  .form-field input:focus, .form-field textarea:focus { outline: none; border-color: var(--orange); }
-  .form-field textarea { resize: vertical; min-height: 70px; }
-  @media (max-width: 640px) { .form-row { grid-template-columns: 1fr; } }
+  .retainer-panel { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
+  .retainer-panel.open { max-height: 900px; }
 
   .vat-note { font-size: 11px; color: var(--muted); margin-top: 16px; }
   @media (max-width: 860px) { .pricing-split { grid-template-columns: 1fr; } }
 
-  /* ABOUT — trimmed */
+  /* SOURCING RETAINER FORM (used inside the accordion panel above) */
+  .retainer-form { max-width: 100%; display: flex; flex-direction: column; gap: 14px; padding-top: 20px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .form-field { display: flex; flex-direction: column; gap: 5px; }
+  .form-field label { font-size: 11.5px; color: var(--muted); font-weight: 500; }
+  .form-field input, .form-field textarea, .form-field select {
+    background: var(--gray2); border: 1px solid var(--gray3); color: var(--white);
+    padding: 9px 11px; font-size: 13px; font-family: 'Inter', sans-serif;
+  }
+  .form-field input:focus, .form-field textarea:focus, .form-field select:focus { outline: none; border-color: var(--orange); }
+  .form-field textarea { resize: vertical; min-height: 70px; }
+  .form-submit { margin-top: 4px; align-self: flex-start; }
+  .form-status { font-size: 12.5px; margin-top: 10px; }
+  .form-status.success { color: #4ADE80; }
+  .form-status.error { color: var(--orange); }
+  @media (max-width: 640px) { .form-row { grid-template-columns: 1fr; } }
+
+  /* ABOUT — "How I Work" */
   .about-section { padding: 56px 48px; display: flex; align-items: baseline; gap: 40px; flex-wrap: wrap; border-top: 1px solid var(--gray2); }
   .about-name { font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 700; letter-spacing: -0.5px; white-space: nowrap; }
   .about-bio { font-size: 13.5px; color: var(--muted); line-height: 1.65; max-width: 620px; }
@@ -224,216 +219,314 @@
   footer { border-top: 1px solid var(--gray2); padding: 28px 48px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
   .footer-copy { font-size: 12px; color: var(--muted); }
   .footer-links { display: flex; gap: 24px; }
-  .footer-links a { font-size: 12px; color: var(--muted); text-decoration: none; }
+  .footer-links a { font-size: 12px; color: var(--muted); text-decoration: none; transition: color 0.2s; }
   .footer-links a:hover { color: var(--white); }
-</style>
-</head>
-<body>
+`;
 
-<div class="demo-banner">DEMO — layout &amp; content only, not wired to the real site</div>
+function RetainerInquiryForm() {
+  const [form, setForm] = useState({
+    name: '', company: '', email: '', phone: '',
+    challenge: '', spend_range: '', urgency: '', preferred_cadence: ''
+  });
+  const [status, setStatus] = useState(null); // null | 'sending' | 'success' | 'error'
 
-<nav class="nav">
-  <a href="#" class="logo">Fuen<span>tiva</span></a>
-  <ul class="nav-links">
-    <li><a href="#domains">Domains</a></li>
-    <li><a href="#coaching">Coaching</a></li>
-    <li><a href="#pricing">Pricing</a></li>
-    <li><a href="#about">Approach</a></li>
-    <li><a href="#contact">Contact</a></li>
-  </ul>
-  <div class="nav-right">
-    <a href="#" class="nav-cta">Client Login</a>
-    <button class="nav-burger" onclick="document.getElementById('navMobile').classList.toggle('open')">
-      <span></span><span></span><span></span>
-    </button>
-  </div>
-</nav>
-<div class="nav-mobile" id="navMobile">
-  <a href="#domains">Domains</a>
-  <a href="#coaching">Coaching</a>
-  <a href="#pricing">Pricing</a>
-  <a href="#about">Approach</a>
-  <a href="#contact">Contact</a>
-  <a href="#">Client Login</a>
-</div>
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
-<div class="hero-wrap">
-  <section class="hero">
-    <div>
-      <div class="hero-eyebrow">Sourcing, RE, FM & CF Intelligence · AI-Powered</div>
-      <h1>Where deep<br>expertise meets<br><em>AI precision</em></h1>
-      <p class="hero-sub">26 years in sourcing, real estate, facility management, and car fleet — now amplified by AI. Real answers, not generic advice.</p>
-    </div>
-    <div class="ai-panel">
-      <div class="panel-header">
-        <div class="panel-dot" style="background:#FF5500"></div>
-        <div class="panel-dot" style="background:#2E2E2E"></div>
-        <div class="panel-dot" style="background:#2E2E2E"></div>
-        <span class="panel-title">Bojan Šipovac</span>
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setStatus('sending');
+    try {
+      const res = await fetch(`${BACKEND_URL}/retainer-inquiry`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      });
+      if (res.ok) {
+        setStatus('success');
+        setForm({ name: '', company: '', email: '', phone: '', challenge: '', spend_range: '', urgency: '', preferred_cadence: '' });
+      } else {
+        setStatus('error');
+      }
+    } catch (err) {
+      setStatus('error');
+    }
+  };
+
+  return (
+    <form className="retainer-form" onSubmit={handleSubmit}>
+      <div className="form-row">
+        <div className="form-field">
+          <label>Name *</label>
+          <input type="text" name="name" value={form.name} onChange={handleChange} required />
+        </div>
+        <div className="form-field">
+          <label>Company *</label>
+          <input type="text" name="company" value={form.company} onChange={handleChange} required />
+        </div>
       </div>
-      <div class="panel-body">
-        <div class="panel-career-item"><div class="panel-career-year">1998</div><div class="panel-career-role">Mechanical Engineer <span>— career start</span></div></div>
-        <div class="panel-career-item"><div class="panel-career-year">1999–2009</div><div class="panel-career-role">Telekom Srbija <span>— public sourcing</span></div></div>
-        <div class="panel-career-item"><div class="panel-career-year">2010</div><div class="panel-career-role">Key Account Manager <span>— start-up</span></div></div>
-        <div class="panel-career-item"><div class="panel-career-year">2010–2012</div><div class="panel-career-role">Council of Europe <span>— freelance</span></div></div>
-        <div class="panel-career-item"><div class="panel-career-year">2011–2018</div><div class="panel-career-role">Global Sourcing Team <span>— Telenor Group, TPC Singapore</span></div></div>
-        <div class="panel-career-item"><div class="panel-career-year">2015–Present</div><div class="panel-career-role">Director, Sourcing/RE/FM/Fleet <span>— Telenor / Yettel</span></div></div>
-        <div class="panel-career-item"><div class="panel-career-year">2016</div><div class="panel-career-role">Nelt <span>— freelance consultant</span></div></div>
-        <div class="panel-career-item"><div class="panel-career-year">Today</div><div class="panel-career-role">Fuentiva <span>— AI-powered coaching</span></div></div>
+      <div className="form-row">
+        <div className="form-field">
+          <label>Email *</label>
+          <input type="email" name="email" value={form.email} onChange={handleChange} required />
+        </div>
+        <div className="form-field">
+          <label>Phone (optional)</label>
+          <input type="tel" name="phone" value={form.phone} onChange={handleChange} />
+        </div>
       </div>
-    </div>
-  </section>
-
-  <div class="stats-strip">
-    <div class="stat-item"><div class="stat-number">26<span>+</span></div><div class="stat-desc">Years in sourcing &amp; ops</div></div>
-    <div class="stat-item"><div class="stat-number">€<span>2B</span></div><div class="stat-desc">Contracts managed</div></div>
-    <div class="stat-item"><div class="stat-number">7<span>x</span></div><div class="stat-desc">Domains, one expert</div></div>
-    <div class="stat-item"><div class="stat-number">24<span>/7</span></div><div class="stat-desc">AI availability</div></div>
-  </div>
-</div>
-
-<section class="section" id="domains">
-  <div class="section-eyebrow">What I Do</div>
-  <h2 class="section-title">Expert domains.</h2>
-  <div class="services-grid">
-    <div class="service-card"><div class="service-mono">SS</div><div class="service-name">Strategic Sourcing</div><p class="service-desc">Category strategy, RFQ design, vendor evaluation, savings realization.</p></div>
-    <div class="service-card"><div class="service-mono">RE</div><div class="service-name">Real Estate</div><p class="service-desc">Site selection, lease negotiation, portfolio optimization.</p></div>
-    <div class="service-card"><div class="service-mono">FM</div><div class="service-name">Facility Management</div><p class="service-desc">Vendor governance, SLA design, OPEX control.</p></div>
-    <div class="service-card"><div class="service-mono">CF</div><div class="service-name">Car Fleet</div><p class="service-desc">Fleet sourcing, TCO analysis, policy design.</p></div>
-    <div class="service-card"><div class="service-mono">TL</div><div class="service-name">Team Leadership</div><p class="service-desc">Building and scaling teams.</p></div>
-    <div class="service-card"><div class="service-mono">PP</div><div class="service-name">Public Sourcing</div><p class="service-desc">Compliant, efficient public tenders.</p></div>
-    <div class="service-card featured"><div class="service-mono">AI</div><div class="service-name">AI in Sourcing</div><p class="service-desc">Practical AI systems for sourcing teams — deployed, not theoretical.</p></div>
-  </div>
-</section>
-
-<section class="coaching-section" id="coaching">
-  <div class="coaching-inner">
-    <div>
-      <div class="section-eyebrow">How It Works</div>
-      <h2 class="section-title" style="margin-bottom:0">Your sourcing expert. Always on.</h2>
-      <div class="coaching-features">
-        <div class="feature-item"><div class="feature-bullet"></div><div class="feature-text"><strong>AI Coaching, 24/7</strong><p>WhatsApp, text &amp; voice — always in context.</p></div></div>
-        <div class="feature-item"><div class="feature-bullet"></div><div class="feature-text"><strong>Quick Win sessions</strong><p>15–30 min live with Bojan, for decisions that can't wait.</p></div></div>
-        <div class="feature-item"><div class="feature-bullet"></div><div class="feature-text"><strong>For you or your whole team</strong><p>Same expertise, individually or under one company account.</p></div></div>
+      <div className="form-field">
+        <label>What's the challenge you'd like help with? *</label>
+        <textarea name="challenge" value={form.challenge} onChange={handleChange} required placeholder="e.g. our fleet contract renews in 3 months and we're not sure we're getting a fair deal..." />
       </div>
-    </div>
-    <div class="chat-mockup">
-      <div class="chat-header">
-        <div class="chat-avatar">B</div>
-        <div><div class="chat-name">Bojan · Sourcing Coach</div><div class="chat-status">● Online</div></div>
+      <div className="form-row">
+        <div className="form-field">
+          <label>Approx. annual spend in this area (optional)</label>
+          <select name="spend_range" value={form.spend_range} onChange={handleChange}>
+            <option value="">Prefer not to say</option>
+            <option value="<50k">Under €50k</option>
+            <option value="50-200k">€50k - €200k</option>
+            <option value="200k+">€200k+</option>
+          </select>
+        </div>
+        <div className="form-field">
+          <label>Urgency (optional)</label>
+          <select name="urgency" value={form.urgency} onChange={handleChange}>
+            <option value="">Not sure yet</option>
+            <option value="immediate">Immediate</option>
+            <option value="within_month">Within a month</option>
+            <option value="exploring">Just exploring</option>
+          </select>
+        </div>
       </div>
-      <div class="chat-body">
-        <div><div class="chat-msg bot">Ready for today's session. What's the biggest challenge on your plate right now?</div><div class="chat-time">09:02</div></div>
-        <div style="align-self:flex-end"><div class="chat-msg user">We're renewing a major contract and the vendor is pushing back on our price benchmarks.</div><div class="chat-time" style="text-align:right">09:03</div></div>
-        <div><div class="chat-msg bot">Classic anchor move. Do you have at least 2 alternative quotes in hand? That's your leverage.<span class="cursor"></span></div><div class="chat-time">09:03</div></div>
+      <div className="form-field">
+        <label>Preferred cadence (optional)</label>
+        <select name="preferred_cadence" value={form.preferred_cadence} onChange={handleChange}>
+          <option value="">Not sure — recommend one</option>
+          <option value="standard">Standard (3x/week)</option>
+          <option value="intensive">Intensive (daily)</option>
+        </select>
       </div>
-    </div>
-  </div>
-  <div class="coaching-cta"><a href="#" class="btn-primary" style="font-size:16px;padding:18px 44px">Let's start</a></div>
-</section>
+      <button type="submit" className="btn-primary form-submit" disabled={status === 'sending'}>
+        {status === 'sending' ? 'Sending...' : 'Send my request'}
+      </button>
+      {status === 'success' && <p className="form-status success">Thanks — check your email shortly for a tailored proposal.</p>}
+      {status === 'error' && <p className="form-status error">Something went wrong. Please try again or email us directly.</p>}
+    </form>
+  );
+}
 
-<section class="section" id="pricing">
-  <div class="section-eyebrow">Pricing</div>
-  <h2 class="section-title" style="margin-bottom:8px">Straightforward pricing.</h2>
-  <p class="vat-note" style="margin:0 0 36px">Prices excl. VAT.</p>
+export default function Home() {
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [retainerOpen, setRetainerOpen] = useState(false);
 
-  <div class="pricing-split">
-    <div class="pricing-col">
-      <div class="col-eyebrow">For Individuals</div>
+  return (
+    <>
+      <style>{css}</style>
 
-      <div class="price-line">
-        <div class="price-line-left"><strong>AI Coaching</strong><p>Unlimited WhatsApp coaching, text &amp; voice.</p></div>
-        <div class="price-line-right">€99<span>/mo</span></div>
+      {/* NAV */}
+      <nav className="nav">
+        <a href="/" className="logo">Fuen<span>tiva</span></a>
+        <ul className="nav-links">
+          <li><a href="#domains">Domains</a></li>
+          <li><a href="#coaching">Coaching</a></li>
+          <li><a href="#pricing">Pricing</a></li>
+          <li><a href="#about">Approach</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+        <div className="nav-right">
+          <a href="/login" className="nav-cta">Client Login</a>
+          <button className="nav-burger" onClick={() => setMobileNavOpen(!mobileNavOpen)}>
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </nav>
+      <div className={`nav-mobile${mobileNavOpen ? ' open' : ''}`}>
+        <a href="#domains" onClick={() => setMobileNavOpen(false)}>Domains</a>
+        <a href="#coaching" onClick={() => setMobileNavOpen(false)}>Coaching</a>
+        <a href="#pricing" onClick={() => setMobileNavOpen(false)}>Pricing</a>
+        <a href="#about" onClick={() => setMobileNavOpen(false)}>Approach</a>
+        <a href="#contact" onClick={() => setMobileNavOpen(false)}>Contact</a>
+        <a href="/login">Client Login</a>
       </div>
-      <div class="price-line">
-        <div class="price-line-left">
-          <strong>Quick Win Session</strong>
-          <p>Live with Bojan, for decisions that can't wait.</p>
-          <div style="margin-top:10px">
-            <div class="tier-mini"><span>15 min</span><strong>€25</strong></div>
-            <div class="tier-mini"><span>20 min</span><strong>€28</strong></div>
-            <div class="tier-mini"><span>25 min</span><strong>€31</strong></div>
-            <div class="tier-mini"><span>30 min</span><strong>€34</strong></div>
+
+      {/* HERO */}
+      <div className="hero-wrap">
+        <section className="hero">
+          <div>
+            <div className="hero-eyebrow">Sourcing, RE, FM &amp; CF Intelligence · AI-Powered</div>
+            <h1>Where deep<br />expertise meets<br /><em>AI precision</em></h1>
+            <p className="hero-sub">26 years in sourcing, real estate, facility management, and car fleet — now amplified by AI. Real answers, not generic advice.</p>
           </div>
+
+          <div className="ai-panel">
+            <div className="panel-header">
+              <div className="panel-dot" style={{background:'#FF5500'}}></div>
+              <div className="panel-dot" style={{background:'#2E2E2E'}}></div>
+              <div className="panel-dot" style={{background:'#2E2E2E'}}></div>
+              <span className="panel-title">Bojan Šipovac</span>
+            </div>
+            <div className="panel-body">
+              <div className="panel-career-item"><div className="panel-career-year">1998</div><div className="panel-career-role">Mechanical Engineer <span>— career start</span></div></div>
+              <div className="panel-career-item"><div className="panel-career-year">1999–2009</div><div className="panel-career-role">Telekom Srbija <span>— public sourcing</span></div></div>
+              <div className="panel-career-item"><div className="panel-career-year">2010</div><div className="panel-career-role">Key Account Manager <span>— start-up</span></div></div>
+              <div className="panel-career-item"><div className="panel-career-year">2010–2012</div><div className="panel-career-role">Council of Europe <span>— freelance</span></div></div>
+              <div className="panel-career-item"><div className="panel-career-year">2011–2018</div><div className="panel-career-role">Global Sourcing Team <span>— Telenor Group, TPC Singapore</span></div></div>
+              <div className="panel-career-item"><div className="panel-career-year">2015–Present</div><div className="panel-career-role">Director, Sourcing/RE/FM/Fleet <span>— Telenor / Yettel</span></div></div>
+              <div className="panel-career-item"><div className="panel-career-year">2016</div><div className="panel-career-role">Nelt <span>— freelance consultant</span></div></div>
+              <div className="panel-career-item"><div className="panel-career-year">Today</div><div className="panel-career-role">Fuentiva <span>— AI-powered coaching</span></div></div>
+            </div>
+          </div>
+        </section>
+
+        <div className="stats-strip">
+          <div className="stat-item"><div className="stat-number">26<span>+</span></div><div className="stat-desc">Years in sourcing &amp; ops</div></div>
+          <div className="stat-item"><div className="stat-number">€<span>2B</span></div><div className="stat-desc">Contracts managed</div></div>
+          <div className="stat-item"><div className="stat-number">7<span>x</span></div><div className="stat-desc">Domains, one expert</div></div>
+          <div className="stat-item"><div className="stat-number">24<span>/7</span></div><div className="stat-desc">AI availability</div></div>
         </div>
       </div>
 
-      <div class="col-cta"><a href="#" class="btn-primary">Start AI Coaching</a></div>
-    </div>
-
-    <div class="pricing-col b2b">
-      <div class="col-eyebrow">For Teams &amp; Companies</div>
-
-      <div class="price-line">
-        <div class="price-line-left">
-          <strong>Team Subscription</strong>
-          <p>Unlimited AI coaching + live group sessions, one company account.</p>
-          <div style="margin-top:10px">
-            <div class="tier-mini"><span>Starter · up to 5</span><strong>€349/mo</strong></div>
-            <div class="tier-mini"><span>Growth · up to 15</span><strong>€799/mo</strong></div>
-            <div class="tier-mini"><span>Scale · up to 30</span><strong>€1,490/mo</strong></div>
-            <div class="tier-mini"><span>Enterprise · 30+</span><strong>Let's talk</strong></div>
-          </div>
+      {/* DOMAINS */}
+      <section className="section" id="domains">
+        <div className="section-eyebrow">What I Do</div>
+        <h2 className="section-title">Expert domains.</h2>
+        <div className="services-grid">
+          <div className="service-card"><div className="service-mono">SS</div><div className="service-name">Strategic Sourcing</div><p className="service-desc">Category strategy, RFQ design, vendor evaluation, savings realization.</p></div>
+          <div className="service-card"><div className="service-mono">RE</div><div className="service-name">Real Estate</div><p className="service-desc">Site selection, lease negotiation, portfolio optimization.</p></div>
+          <div className="service-card"><div className="service-mono">FM</div><div className="service-name">Facility Management</div><p className="service-desc">Vendor governance, SLA design, OPEX control.</p></div>
+          <div className="service-card"><div className="service-mono">CF</div><div className="service-name">Car Fleet</div><p className="service-desc">Fleet sourcing, TCO analysis, policy design.</p></div>
+          <div className="service-card"><div className="service-mono">TL</div><div className="service-name">Team Leadership</div><p className="service-desc">Building and scaling teams.</p></div>
+          <div className="service-card"><div className="service-mono">PP</div><div className="service-name">Public Sourcing</div><p className="service-desc">Compliant, efficient public tenders.</p></div>
+          <div className="service-card featured"><div className="service-mono">AI</div><div className="service-name">AI in Sourcing</div><p className="service-desc">Practical AI systems for sourcing teams — deployed, not theoretical.</p></div>
         </div>
-      </div>
+      </section>
 
-      <div class="price-line">
-        <div class="price-line-left"><strong>On-site Workshop</strong><p>Half-day (4h) / full-day (8h), built around your team's real challenges.</p></div>
-        <div class="price-line-right">€1,800<span>–€3,200</span></div>
-      </div>
-
-      <div class="price-line">
-        <div class="price-line-left">
-          <strong>Sourcing Retainer</strong>
-          <p>Dedicated senior sourcing support, fixed weekly schedule, 2-month minimum.</p>
-          <button class="retainer-toggle" onclick="document.getElementById('retainerPanel').classList.toggle('open')">Get a tailored quote</button>
-          <div class="retainer-panel" id="retainerPanel">
-            <div class="retainer-form">
-              <div class="form-row">
-                <div class="form-field"><label>Name</label><input type="text"></div>
-                <div class="form-field"><label>Company</label><input type="text"></div>
-              </div>
-              <div class="form-row">
-                <div class="form-field"><label>Email</label><input type="email"></div>
-                <div class="form-field"><label>Phone (optional)</label><input type="tel"></div>
-              </div>
-              <div class="form-field"><label>What's the challenge?</label><textarea></textarea></div>
-              <button class="btn-primary" style="align-self:flex-start">Send request</button>
+      {/* COACHING SHOWCASE */}
+      <section className="coaching-section" id="coaching">
+        <div className="coaching-inner">
+          <div>
+            <div className="section-eyebrow">How It Works</div>
+            <h2 className="section-title" style={{marginBottom:0}}>Your sourcing expert. Always on.</h2>
+            <div className="coaching-features">
+              <div className="feature-item"><div className="feature-bullet"></div><div className="feature-text"><strong>AI Coaching, 24/7</strong><p>WhatsApp, text &amp; voice — always in context.</p></div></div>
+              <div className="feature-item"><div className="feature-bullet"></div><div className="feature-text"><strong>Quick Win sessions</strong><p>15–30 min live with Bojan, for decisions that can't wait.</p></div></div>
+              <div className="feature-item"><div className="feature-bullet"></div><div className="feature-text"><strong>For you or your whole team</strong><p>Same expertise, individually or under one company account.</p></div></div>
+            </div>
+          </div>
+          <div className="chat-mockup">
+            <div className="chat-header">
+              <div className="chat-avatar">B</div>
+              <div><div className="chat-name">Bojan · Sourcing Coach</div><div className="chat-status">● Online</div></div>
+            </div>
+            <div className="chat-body">
+              <div><div className="chat-msg bot">Ready for today's session. What's the biggest challenge on your plate right now?</div><div className="chat-time">09:02</div></div>
+              <div style={{alignSelf:'flex-end'}}><div className="chat-msg user">We're renewing a major contract and the vendor is pushing back on our price benchmarks.</div><div className="chat-time" style={{textAlign:'right'}}>09:03</div></div>
+              <div><div className="chat-msg bot">Classic anchor move. Do you have at least 2 alternative quotes in hand? That's your leverage.<span className="cursor"></span></div><div className="chat-time">09:03</div></div>
             </div>
           </div>
         </div>
-        <div class="price-line-right">€3,000<span>–€5,000</span></div>
-      </div>
+        <div className="coaching-cta"><a href="/login" className="btn-primary" style={{fontSize:'16px', padding:'18px 44px'}}>Let's start</a></div>
+      </section>
 
-      <div class="price-line">
-        <div class="price-line-left"><strong>Automation Scripts</strong><p>A custom script or bot for one specific manual task — delivered as ready-to-use files.</p></div>
-        <div class="price-line-right">from €750</div>
-      </div>
+      {/* PRICING */}
+      <section className="section" id="pricing">
+        <div className="section-eyebrow">Pricing</div>
+        <h2 className="section-title" style={{marginBottom:'8px'}}>Straightforward pricing.</h2>
+        <p className="vat-note" style={{margin:'0 0 36px'}}>Prices excl. VAT.</p>
 
-      <div class="col-cta"><a href="#" class="btn-primary">Book a scoping call</a></div>
-    </div>
-  </div>
-</section>
+        <div className="pricing-split">
+          <div className="pricing-col">
+            <div className="col-eyebrow">For Individuals</div>
 
-<section class="about-section" id="about">
-  <div class="about-name">How I Work</div>
-  <p class="about-bio">Flexibility, integrity, concreteness. Real risks, weighed openly — no dressing up, no generic frameworks.</p>
-</section>
+            <div className="price-line">
+              <div className="price-line-left"><strong>AI Coaching</strong><p>Unlimited WhatsApp coaching, text &amp; voice.</p></div>
+              <div className="price-line-right">€99<span>/mo</span></div>
+            </div>
+            <div className="price-line">
+              <div className="price-line-left">
+                <strong>Quick Win Session</strong>
+                <p>Live with Bojan, for decisions that can't wait.</p>
+                <div style={{marginTop:'10px'}}>
+                  <div className="tier-mini"><span>15 min</span><strong>€25</strong></div>
+                  <div className="tier-mini"><span>20 min</span><strong>€28</strong></div>
+                  <div className="tier-mini"><span>25 min</span><strong>€31</strong></div>
+                  <div className="tier-mini"><span>30 min</span><strong>€34</strong></div>
+                </div>
+              </div>
+            </div>
 
-<section class="cta-section" id="contact">
-  <h2>Ready to upgrade<br>your current skills?</h2>
-  <p>Book a free 15-minute call — we'll pinpoint where you (or your team) are stuck and whether coaching is the right fit. No pitch, no obligation.</p>
-  <a href="#" class="btn-primary" style="font-size:15px;padding:16px 36px">Book intro call →</a>
-</section>
+            <div className="col-cta"><a href="/login" className="btn-primary">Start AI Coaching</a></div>
+          </div>
 
-<footer>
-  <div class="footer-copy">© 2026 Fuentiva. All rights reserved.</div>
-  <div class="footer-links">
-    <a href="#">Privacy</a>
-    <a href="#">LinkedIn</a>
-    <a href="#">fuentiva.es</a>
-  </div>
-</footer>
+          <div className="pricing-col b2b">
+            <div className="col-eyebrow">For Teams &amp; Companies</div>
 
-</body>
-</html>
+            <div className="price-line">
+              <div className="price-line-left">
+                <strong>Team Subscription</strong>
+                <p>Unlimited AI coaching + live group sessions, one company account.</p>
+                <div style={{marginTop:'10px'}}>
+                  <div className="tier-mini"><span>Starter · up to 5</span><strong>€349/mo</strong></div>
+                  <div className="tier-mini"><span>Growth · up to 15</span><strong>€799/mo</strong></div>
+                  <div className="tier-mini"><span>Scale · up to 30</span><strong>€1,490/mo</strong></div>
+                  <div className="tier-mini"><span>Enterprise · 30+</span><strong>Let's talk</strong></div>
+                </div>
+              </div>
+            </div>
+
+            <div className="price-line">
+              <div className="price-line-left"><strong>On-site Workshop</strong><p>Half-day (4h) / full-day (8h), built around your team's real challenges.</p></div>
+              <div className="price-line-right">€1,800<span>–€3,200</span></div>
+            </div>
+
+            <div className="price-line">
+              <div className="price-line-left">
+                <strong>Sourcing Retainer</strong>
+                <p>Dedicated senior sourcing support, fixed weekly schedule, 2-month minimum.</p>
+                <button type="button" className="retainer-toggle" onClick={() => setRetainerOpen(!retainerOpen)}>
+                  {retainerOpen ? 'Hide form' : 'Get a tailored quote'}
+                </button>
+                <div className={`retainer-panel${retainerOpen ? ' open' : ''}`}>
+                  <RetainerInquiryForm />
+                </div>
+              </div>
+              <div className="price-line-right">€3,000<span>–€5,000</span></div>
+            </div>
+
+            <div className="price-line">
+              <div className="price-line-left"><strong>Automation Scripts</strong><p>A custom script or bot for one specific manual task — delivered as ready-to-use files.</p></div>
+              <div className="price-line-right">from €750</div>
+            </div>
+
+            <div className="col-cta"><a href="#contact" className="btn-primary">Book a scoping call</a></div>
+          </div>
+        </div>
+      </section>
+
+      {/* APPROACH ("How I Work") */}
+      <section className="about-section" id="about">
+        <div className="about-name">How I Work</div>
+        <p className="about-bio">Flexibility, integrity, concreteness. Real risks, weighed openly — no dressing up, no generic frameworks.</p>
+      </section>
+
+      {/* CTA */}
+      <section className="cta-section" id="contact">
+        <h2>Ready to upgrade<br />your current skills?</h2>
+        <p>Book a free 15-minute call — we'll pinpoint where you (or your team) are stuck and whether coaching is the right fit. No pitch, no obligation.</p>
+        <a href="https://calendly.com/bojan-sipovac/intro-call-15-min" target="_blank" rel="noreferrer" className="btn-primary" style={{fontSize:'15px', padding:'16px 36px'}}>Book intro call →</a>
+      </section>
+
+      {/* FOOTER */}
+      <footer>
+        <div className="footer-copy">© 2026 Fuentiva. All rights reserved.</div>
+        <div className="footer-links">
+          <a href="#">Privacy</a>
+          <a href="#">LinkedIn</a>
+          <a href="#">fuentiva.es</a>
+        </div>
+      </footer>
+    </>
+  );
+}
