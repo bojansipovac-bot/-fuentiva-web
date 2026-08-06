@@ -1,14 +1,10 @@
-import React, { useState } from 'react';
-
-// TODO: replace with your actual Railway backend URL (same one used for
-// Stripe checkout / other API calls elsewhere in the app)
-const BACKEND_URL = 'https://procurement-coach-production.up.railway.app';
-
-const styles = {
-  '@import': 'https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500&display=swap',
-};
-
-const css = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fuentiva — Redesign Demo</title>
+<style>
   @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500&display=swap');
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -33,12 +29,19 @@ const css = `
     -webkit-font-smoothing: antialiased;
   }
 
+  /* DEMO BANNER */
+  .demo-banner {
+    background: var(--orange); color: #fff; text-align: center;
+    font-family: 'Space Grotesk', sans-serif; font-size: 12.5px; font-weight: 600;
+    letter-spacing: 0.5px; padding: 8px; position: relative; z-index: 200;
+  }
+
   /* NAV */
   .nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    position: sticky; top: 0; left: 0; right: 0; z-index: 100;
     display: flex; align-items: center; justify-content: space-between;
     padding: 0 48px; height: 68px;
-    background: rgba(8,8,8,0.88);
+    background: rgba(8,8,8,0.92);
     backdrop-filter: blur(14px);
     border-bottom: 1px solid var(--gray2);
   }
@@ -47,43 +50,30 @@ const css = `
   .nav-links { display: flex; gap: 32px; list-style: none; }
   .nav-links a { font-size: 13.5px; font-weight: 500; color: var(--light); text-decoration: none; transition: color 0.2s; }
   .nav-links a:hover { color: var(--white); }
+  .nav-right { display: flex; align-items: center; gap: 20px; }
   .nav-cta { background: var(--orange); color: #fff; font-family: 'Space Grotesk', sans-serif; font-size: 13.5px; font-weight: 600; padding: 9px 22px; border: none; cursor: pointer; text-decoration: none; transition: background 0.2s; }
   .nav-cta:hover { background: var(--orange2); }
+  .nav-burger { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 6px; }
+  .nav-burger span { width: 22px; height: 2px; background: var(--white); display: block; }
+  .nav-mobile { display: none; flex-direction: column; background: var(--gray1); border-bottom: 1px solid var(--gray2); padding: 8px 24px 20px; }
+  .nav-mobile.open { display: flex; }
+  .nav-mobile a { color: var(--light); text-decoration: none; font-size: 15px; padding: 12px 0; border-bottom: 1px solid var(--gray2); }
+  .nav-mobile a:last-child { border-bottom: none; }
 
-  /* Prevent the fixed nav from overlapping section headings on anchor jump */
-  #domains, #offers, #coaching, #company-coaching, #pricing, #about, #contact, #retainer-inquiry { scroll-margin-top: 84px; }
+  @media (max-width: 860px) {
+    .nav-links { display: none; }
+    .nav-burger { display: flex; }
+    .nav-cta { display: none; }
+    .nav { padding: 0 20px; }
+  }
 
-  /* SOURCING RETAINER FORM */
-  .retainer-intro { max-width: 640px; margin-bottom: 32px; }
-  .retainer-intro p { font-size: 14px; color: var(--muted); line-height: 1.6; }
-  .retainer-form { max-width: 640px; display: flex; flex-direction: column; gap: 18px; }
-  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
-  .form-field { display: flex; flex-direction: column; gap: 6px; }
-  .form-field label { font-size: 12px; color: var(--muted); font-weight: 500; }
-  .form-field input, .form-field textarea, .form-field select {
-    background: var(--gray1); border: 1px solid var(--gray3); color: var(--white);
-    padding: 10px 12px; font-size: 13.5px; font-family: 'Inter', sans-serif;
-  }
-  .form-field input:focus, .form-field textarea:focus, .form-field select:focus { outline: none; border-color: var(--orange); }
-  .form-field textarea { resize: vertical; min-height: 90px; }
-  .form-submit { margin-top: 8px; align-self: flex-start; }
-  .form-status { font-size: 12.5px; margin-top: 12px; }
-  .form-status.success { color: #4ADE80; }
-  .form-status.error { color: var(--orange); }
-  @media (max-width: 640px) {
-    .form-row { grid-template-columns: 1fr; }
-  }
+  #domains, #coaching, #pricing, #about, #contact { scroll-margin-top: 84px; }
 
   /* HERO */
-  .hero-wrap {
-    min-height: 100vh;
-    display: flex; flex-direction: column;
-  }
+  .hero-wrap { min-height: 92vh; display: flex; flex-direction: column; }
   .hero {
-    flex: 1;
-    display: grid; grid-template-columns: 1fr 1fr;
-    align-items: center; gap: 60px;
-    padding: 108px 48px 32px;
+    flex: 1; display: grid; grid-template-columns: 1fr 1fr;
+    align-items: center; gap: 60px; padding: 64px 48px 32px;
     position: relative; overflow: hidden;
   }
   .hero::before {
@@ -93,92 +83,74 @@ const css = `
     pointer-events: none;
   }
   .hero-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 2.5px; text-transform: uppercase; color: var(--orange); margin-bottom: 24px; }
-  .hero h1 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(42px, 5vw, 64px); font-weight: 700; line-height: 1.08; letter-spacing: -2px; margin-bottom: 28px; }
+  .hero h1 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(38px, 5vw, 60px); font-weight: 700; line-height: 1.08; letter-spacing: -2px; margin-bottom: 24px; }
   .hero h1 em { font-style: normal; color: var(--orange); }
-  .hero-sub { font-size: 17px; color: var(--light); line-height: 1.7; max-width: 460px; margin-bottom: 44px; }
-  .hero-actions { display: flex; gap: 16px; align-items: center; }
+  .hero-sub { font-size: 16px; color: var(--light); line-height: 1.7; max-width: 440px; margin-bottom: 40px; }
+  .hero-actions { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
   .btn-primary { background: var(--orange); color: #fff; font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 600; padding: 14px 28px; border: none; cursor: pointer; text-decoration: none; transition: background 0.2s; display: inline-block; }
   .btn-primary:hover { background: var(--orange2); }
   .btn-ghost { color: var(--light); font-size: 14px; font-weight: 500; text-decoration: none; border-bottom: 1px solid var(--gray3); padding-bottom: 2px; transition: color 0.2s; }
   .btn-ghost:hover { color: var(--white); }
 
-  /* AI PANEL */
   .ai-panel { background: var(--gray1); border: 1px solid var(--gray2); }
   .panel-header { display: flex; align-items: center; gap: 8px; padding: 14px 20px; border-bottom: 1px solid var(--gray2); background: var(--gray2); }
   .panel-dot { width: 9px; height: 9px; border-radius: 50%; }
   .panel-title { font-family: 'Space Grotesk', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-left: 4px; }
-  .panel-body { padding: 24px; }
-  .metric-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--gray2); }
-  .metric-row:last-of-type { border-bottom: none; }
-  .metric-label { font-size: 12px; color: var(--muted); font-weight: 500; }
-  .metric-value { font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 600; color: var(--white); }
-  .metric-value.positive { color: #4ADE80; }
-  .metric-value.orange { color: var(--orange); }
-  .pb-wrap { margin-top: 20px; }
-  .pb-label { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-bottom: 6px; }
-  .pb-track { height: 3px; background: var(--gray3); }
-  .pb-fill { height: 100%; background: var(--orange); transition: width 2s ease; }
-  .ai-insight { margin-top: 20px; background: var(--oglow); border: 1px solid rgba(255,85,0,0.2); padding: 14px 16px; }
-  .ai-insight-label { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--orange); margin-bottom: 6px; }
-  .ai-insight p { font-size: 12.5px; color: var(--light); line-height: 1.6; }
-  .cursor { display: inline-block; width: 2px; height: 13px; background: var(--orange); animation: blink 1s step-end infinite; vertical-align: middle; margin-left: 2px; }
-  @keyframes blink { 50% { opacity: 0; } }
-
-  .panel-career-list { display: flex; flex-direction: column; }
-  .panel-career-item { display: flex; gap: 14px; align-items: baseline; padding: 8px 0; border-bottom: 1px solid var(--gray2); }
+  .panel-body { padding: 20px 24px; }
+  .panel-career-item { display: flex; gap: 14px; align-items: baseline; padding: 7px 0; border-bottom: 1px solid var(--gray2); }
   .panel-career-item:last-child { border-bottom: none; }
-  .panel-career-year { font-family: 'Space Grotesk', sans-serif; font-size: 11.5px; font-weight: 700; color: var(--orange); flex: 0 0 82px; }
-  .panel-career-role { font-size: 12.5px; color: var(--white); font-weight: 500; }
+  .panel-career-year { font-family: 'Space Grotesk', sans-serif; font-size: 11px; font-weight: 700; color: var(--orange); flex: 0 0 78px; }
+  .panel-career-role { font-size: 12px; color: var(--white); font-weight: 500; }
   .panel-career-role span { color: var(--muted); font-weight: 400; }
+
+  @media (max-width: 860px) {
+    .hero { grid-template-columns: 1fr; padding: 40px 20px; gap: 36px; }
+  }
 
   /* STATS */
   .stats-strip { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--gray2); border-bottom: 1px solid var(--gray2); }
-  .stat-item { padding: 36px 48px; border-right: 1px solid var(--gray2); }
+  .stat-item { padding: 28px 24px; border-right: 1px solid var(--gray2); }
   .stat-item:last-child { border-right: none; }
-  .stat-number { font-family: 'Space Grotesk', sans-serif; font-size: 42px; font-weight: 700; letter-spacing: -2px; line-height: 1; margin-bottom: 6px; }
+  .stat-number { font-family: 'Space Grotesk', sans-serif; font-size: 36px; font-weight: 700; letter-spacing: -2px; line-height: 1; margin-bottom: 6px; }
   .stat-number span { color: var(--orange); }
-  .stat-desc { font-size: 13px; color: var(--muted); }
+  .stat-desc { font-size: 12px; color: var(--muted); }
+  @media (max-width: 640px) {
+    .stats-strip { grid-template-columns: repeat(2, 1fr); }
+    .stat-item { border-bottom: 1px solid var(--gray2); }
+  }
 
-  /* SERVICES */
-  .section { padding: 56px 48px 40px; }
+  /* SECTION SHARED */
+  .section { padding: 72px 48px; }
   .section-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 2.5px; text-transform: uppercase; color: var(--orange); margin-bottom: 12px; }
-  .section-title { font-family: 'Space Grotesk', sans-serif; font-size: clamp(28px, 3.4vw, 42px); font-weight: 700; letter-spacing: -1.5px; line-height: 1.1; margin-bottom: 32px; max-width: 700px; }
-  .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--gray2); border: 1px solid var(--gray2); }
+  .section-title { font-family: 'Space Grotesk', sans-serif; font-size: clamp(26px, 3.2vw, 38px); font-weight: 700; letter-spacing: -1.5px; line-height: 1.1; margin-bottom: 36px; max-width: 700px; }
+  @media (max-width: 640px) { .section { padding: 48px 20px; } }
 
-  /* SERVICES SPLIT (B2C / B2B) */
-  .services-split { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--gray2); border: 1px solid var(--gray2); }
-  .services-col { background: var(--black); padding: 32px; display: flex; flex-direction: column; }
-  .services-col.b2b { background: var(--gray1); }
-  .col-eyebrow { font-size: 10.5px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
-  .col-heading { font-family: 'Space Grotesk', sans-serif; font-size: 21px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 8px; }
-  .col-desc { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 22px; }
-  .mini-service { display: flex; gap: 12px; padding: 11px 0; border-top: 1px solid var(--gray2); }
-  .mini-icon { font-size: 17px; flex-shrink: 0; width: 22px; }
-  .mini-name { font-family: 'Space Grotesk', sans-serif; font-size: 13.5px; font-weight: 600; margin-bottom: 2px; }
-  .mini-desc { font-size: 11.5px; color: var(--muted); line-height: 1.5; }
-  .offer-card { border-top: 1px solid var(--gray3); padding: 16px 0; }
-  .offer-name { font-family: 'Space Grotesk', sans-serif; font-size: 14.5px; font-weight: 600; margin-bottom: 4px; }
-  .offer-price { font-size: 11.5px; color: var(--orange); font-weight: 600; margin-bottom: 6px; }
-  .offer-desc { font-size: 12px; color: var(--muted); line-height: 1.55; }
-  .col-cta { margin-top: 24px; }
+  /* DOMAINS */
+  .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--gray2); border: 1px solid var(--gray2); }
   .service-card { background: var(--black); padding: 22px 24px; transition: background 0.2s; position: relative; }
   .service-card:hover { background: var(--gray1); }
   .service-card.featured { background: var(--gray1); border: 1px solid rgba(255,85,0,0.3); margin: -1px; grid-column: span 3; }
-  .service-card.featured::before { content: 'AI-POWERED'; position: absolute; top: 16px; right: 20px; font-size: 9px; font-weight: 700; letter-spacing: 2px; color: var(--orange); background: var(--oglow); padding: 4px 8px; border: 1px solid rgba(255,85,0,0.3); }
-  .service-icon { font-size: 22px; margin-bottom: 10px; }
-  .service-name { font-family: 'Space Grotesk', sans-serif; font-size: 16.5px; font-weight: 600; letter-spacing: -0.5px; margin-bottom: 6px; }
+  .service-mono { width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; background: var(--gray2); border: 1px solid var(--gray3); font-family: 'Space Grotesk', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; color: var(--orange); margin-bottom: 14px; }
+  .service-card.featured .service-mono { background: var(--oglow); border-color: rgba(255,85,0,0.4); }
+  .service-name { font-family: 'Space Grotesk', sans-serif; font-size: 15.5px; font-weight: 600; letter-spacing: -0.3px; margin-bottom: 6px; }
   .service-desc { font-size: 12.5px; color: var(--muted); line-height: 1.5; }
+  @media (max-width: 860px) {
+    .services-grid { grid-template-columns: repeat(2, 1fr); }
+    .service-card.featured { grid-column: span 2; }
+  }
+  @media (max-width: 560px) {
+    .services-grid { grid-template-columns: 1fr; }
+    .service-card.featured { grid-column: span 1; }
+  }
 
-  /* COACHING */
-  .coaching-section { padding: 96px 48px; background: var(--gray1); border-top: 1px solid var(--gray2); border-bottom: 1px solid var(--gray2); }
-  .coaching-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
-  .coaching-features { margin-top: 36px; }
-  .feature-item { display: flex; gap: 16px; margin-bottom: 28px; }
+  /* COACHING SHOWCASE */
+  .coaching-section { padding: 80px 48px; background: var(--gray1); border-top: 1px solid var(--gray2); border-bottom: 1px solid var(--gray2); }
+  .coaching-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+  .coaching-features { margin-top: 28px; }
+  .feature-item { display: flex; gap: 14px; margin-bottom: 22px; }
   .feature-bullet { width: 6px; height: 6px; background: var(--orange); margin-top: 8px; flex-shrink: 0; }
-  .feature-text strong { font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 600; display: block; margin-bottom: 4px; }
-  .feature-text p { font-size: 13.5px; color: var(--muted); line-height: 1.6; }
-
-  /* CHAT MOCKUP */
+  .feature-text strong { font-family: 'Space Grotesk', sans-serif; font-size: 14.5px; font-weight: 600; display: block; margin-bottom: 3px; }
+  .feature-text p { font-size: 13px; color: var(--muted); line-height: 1.55; }
   .chat-mockup { background: var(--black); border: 1px solid var(--gray2); }
   .chat-header { padding: 14px 20px; background: var(--gray2); border-bottom: 1px solid var(--gray3); display: flex; align-items: center; gap: 10px; }
   .chat-avatar { width: 30px; height: 30px; background: var(--orange); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Space Grotesk', sans-serif; font-size: 12px; font-weight: 700; color: #fff; }
@@ -189,640 +161,279 @@ const css = `
   .chat-msg.bot { background: var(--gray2); color: var(--light); align-self: flex-start; }
   .chat-msg.user { background: var(--orange); color: #fff; align-self: flex-end; }
   .chat-time { font-size: 10px; color: var(--gray3); margin-top: 4px; }
+  .cursor { display: inline-block; width: 2px; height: 13px; background: var(--orange); animation: blink 1s step-end infinite; vertical-align: middle; margin-left: 2px; }
+  @keyframes blink { 50% { opacity: 0; } }
+  .coaching-cta { text-align: center; margin-top: 48px; }
+  @media (max-width: 860px) {
+    .coaching-inner { grid-template-columns: 1fr; }
+    .coaching-section { padding: 48px 20px; }
+  }
 
-  /* ABOUT */
-  .about-section { padding: 80px 48px; display: grid; grid-template-columns: minmax(360px, 420px) 1fr; gap: 60px; }
-  .about-name { font-family: 'Space Grotesk', sans-serif; font-size: 36px; font-weight: 700; letter-spacing: -1.5px; line-height: 1.1; margin-bottom: 14px; }
-  .about-title { font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 700; letter-spacing: -0.5px; line-height: 1.25; color: var(--white); }
+  /* PRICING — TWO COLUMN */
+  .pricing-split { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--gray2); border: 1px solid var(--gray2); }
+  .pricing-col { background: var(--black); padding: 32px; display: flex; flex-direction: column; }
+  .pricing-col.b2b { background: var(--gray1); }
+  .col-eyebrow { font-size: 10.5px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 18px; }
 
-  .milestone-list { max-width: 780px; }
-  .milestone-item { display: flex; gap: 20px; align-items: baseline; padding: 19px 0; border-bottom: 1px solid var(--gray2); }
-  .milestone-item:last-child { border-bottom: none; }
-  .milestone-year { font-family: 'Space Grotesk', sans-serif; font-size: 12.5px; font-weight: 700; color: var(--orange); flex: 0 0 110px; }
-  .milestone-role { font-size: 14px; color: var(--white); font-weight: 500; }
-  .milestone-role span { color: var(--muted); font-weight: 400; }
+  .price-line { display: flex; justify-content: space-between; align-items: baseline; padding: 16px 0; border-top: 1px solid var(--gray2); gap: 16px; }
+  .price-line:first-of-type { border-top: none; }
+  .price-line-left strong { font-family: 'Space Grotesk', sans-serif; font-size: 14.5px; font-weight: 600; display: block; margin-bottom: 3px; }
+  .price-line-left p { font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .price-line-right { font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 700; color: var(--orange); white-space: nowrap; text-align: right; }
+  .price-line-right span { display: block; font-size: 10.5px; font-weight: 500; color: var(--muted); margin-top: 2px; }
 
-  /* TIMELINE */
-  .timeline-section { padding: 0 48px 96px; }
-  .timeline-list { max-width: 780px; }
-  .timeline-item { display: flex; gap: 24px; margin-bottom: 30px; }
-  .timeline-year { font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 700; color: var(--orange); flex: 0 0 130px; padding-top: 2px; }
-  .timeline-text strong { font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 600; display: block; margin-bottom: 4px; color: var(--white); }
-  .timeline-text p { font-size: 13.5px; color: var(--muted); line-height: 1.65; }
+  .tier-mini { display: flex; justify-content: space-between; font-size: 12.5px; padding: 6px 0; color: var(--light); }
+  .tier-mini strong { color: var(--white); font-weight: 600; }
+
+  .col-cta { margin-top: auto; padding-top: 24px; }
+
+  /* Retainer accordion */
+  .retainer-toggle { background: none; border: 1px solid var(--gray3); color: var(--orange); font-family: 'Space Grotesk', sans-serif; font-size: 12.5px; font-weight: 600; padding: 10px 16px; cursor: pointer; margin-top: 8px; transition: all 0.2s; }
+  .retainer-toggle:hover { background: var(--orange); color: #fff; border-color: var(--orange); }
+  .retainer-panel { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+  .retainer-panel.open { max-height: 600px; }
+  .retainer-form { padding-top: 20px; display: flex; flex-direction: column; gap: 14px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .form-field { display: flex; flex-direction: column; gap: 5px; }
+  .form-field label { font-size: 11.5px; color: var(--muted); font-weight: 500; }
+  .form-field input, .form-field textarea {
+    background: var(--gray2); border: 1px solid var(--gray3); color: var(--white);
+    padding: 9px 11px; font-size: 13px; font-family: 'Inter', sans-serif;
+  }
+  .form-field input:focus, .form-field textarea:focus { outline: none; border-color: var(--orange); }
+  .form-field textarea { resize: vertical; min-height: 70px; }
+  @media (max-width: 640px) { .form-row { grid-template-columns: 1fr; } }
+
+  .vat-note { font-size: 11px; color: var(--muted); margin-top: 16px; }
+  @media (max-width: 860px) { .pricing-split { grid-template-columns: 1fr; } }
+
+  /* ABOUT — trimmed */
+  .about-section { padding: 56px 48px; display: flex; align-items: baseline; gap: 40px; flex-wrap: wrap; border-top: 1px solid var(--gray2); }
+  .about-name { font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 700; letter-spacing: -0.5px; white-space: nowrap; }
+  .about-bio { font-size: 13.5px; color: var(--muted); line-height: 1.65; max-width: 620px; }
+  @media (max-width: 640px) { .about-section { padding: 40px 20px; } }
 
   /* CTA */
-  .cta-section { padding: 96px 48px; text-align: center; position: relative; overflow: hidden; }
+  .cta-section { padding: 88px 48px; text-align: center; position: relative; overflow: hidden; }
   .cta-section::before { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 600px; height: 400px; background: radial-gradient(ellipse, rgba(255,85,0,0.08) 0%, transparent 70%); pointer-events: none; }
-  .cta-section h2 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(36px, 5vw, 58px); font-weight: 700; letter-spacing: -2px; line-height: 1.05; margin-bottom: 20px; }
-  .cta-section p { font-size: 16px; color: var(--muted); margin-bottom: 44px; }
-
-  /* PRICING */
-  .pricing-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--gray2); border: 1px solid var(--gray2); }
-  .price-card { background: var(--black); padding: 28px 24px; display: flex; flex-direction: column; }
-  .price-card.featured { background: var(--gray1); border-top: 2px solid var(--orange); }
-  .price-tier { font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 700; letter-spacing: -0.3px; margin-bottom: 4px; }
-  .price-size { font-size: 11.5px; color: var(--muted); margin-bottom: 18px; }
-  .price-amount { font-family: 'Space Grotesk', sans-serif; font-size: 32px; font-weight: 700; letter-spacing: -1.5px; margin-bottom: 20px; }
-  .price-amount span { font-size: 13px; font-weight: 500; color: var(--muted); letter-spacing: 0; }
-  .price-feat { list-style: none; margin: 0 0 24px; padding: 0; display: flex; flex-direction: column; gap: 10px; flex: 1; }
-  .price-feat li { font-size: 12.5px; color: var(--light); line-height: 1.45; padding-left: 18px; position: relative; }
-  .price-feat li::before { content: '→'; position: absolute; left: 0; color: var(--orange); }
-  .price-cta { font-family: 'Space Grotesk', sans-serif; font-size: 12.5px; font-weight: 600; color: var(--orange); text-decoration: none; border: 1px solid var(--gray3); padding: 11px; text-align: center; transition: all 0.2s; }
-  .price-cta:hover { background: var(--orange); color: #fff; border-color: var(--orange); }
-  .pricing-note { font-size: 12.5px; color: var(--muted); margin-top: 18px; }
-  .workshop-block { margin-top: 48px; display: grid; grid-template-columns: 1fr 1fr; gap: 48px; background: var(--gray1); border: 1px solid var(--gray2); padding: 40px; align-items: center; }
-  .workshop-block h3 { font-family: 'Space Grotesk', sans-serif; font-size: 26px; font-weight: 700; letter-spacing: -1px; margin: 8px 0 12px; }
-  .workshop-intro p { font-size: 13.5px; color: var(--muted); line-height: 1.6; }
-  .workshop-prices { display: flex; flex-direction: column; }
-  .wp-row { display: flex; justify-content: space-between; align-items: baseline; padding: 16px 0; border-bottom: 1px solid var(--gray2); }
-  .wp-row span { font-size: 13.5px; color: var(--light); }
-  .wp-row strong { font-family: 'Space Grotesk', sans-serif; font-size: 17px; font-weight: 700; color: var(--white); }
-  .wp-meta { font-size: 11.5px; color: var(--muted); padding: 14px 0 20px; }
-
-  /* PRICING — COMPACT (fit one screen, scoped to #pricing only) */
-  #pricing { padding: 28px 48px 20px; }
-  #pricing .section-title { margin-bottom: 18px; }
-  #pricing .price-card { padding: 20px 20px; }
-  #pricing .price-size { margin-bottom: 10px; }
-  #pricing .price-amount { font-size: 28px; margin-bottom: 14px; }
-  #pricing .price-feat { gap: 8px; margin: 0 0 16px; }
-  #pricing .price-feat li { font-size: 12px; padding-left: 17px; }
-  #pricing .price-cta { padding: 9px; font-size: 12px; }
-  #pricing .pricing-note { margin-top: 12px; font-size: 11.5px; }
-  #pricing .workshop-block { margin-top: 24px; padding: 26px 30px; gap: 32px; }
-  #pricing .workshop-block h3 { font-size: 21px; margin: 4px 0 8px; }
-  #pricing .workshop-intro p { font-size: 12.5px; line-height: 1.5; }
-  #pricing .wp-row { padding: 9px 0; }
-  #pricing .wp-row span { font-size: 12.5px; }
-  #pricing .wp-row strong { font-size: 15px; }
-  #pricing .wp-meta { padding: 8px 0 10px; font-size: 11px; }
-
-  /* PRICING — RESPONSIVE */
-  @media (max-width: 1100px) {
-    .pricing-grid { grid-template-columns: repeat(2, 1fr); }
-    .workshop-block { grid-template-columns: 1fr; padding: 32px; gap: 28px; }
-  }
-  @media (max-width: 640px) {
-    .section { padding: 40px 20px 28px; }
-    .pricing-grid { grid-template-columns: 1fr; }
-    .price-card { padding: 24px 20px; }
-    .workshop-block { padding: 24px 20px; }
-    .wp-row { flex-direction: column; align-items: flex-start; gap: 4px; }
-  }
+  .cta-section h2 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(30px, 4.5vw, 48px); font-weight: 700; letter-spacing: -1.5px; line-height: 1.08; margin-bottom: 18px; }
+  .cta-section p { font-size: 15px; color: var(--muted); margin-bottom: 36px; max-width: 480px; margin-left: auto; margin-right: auto; }
+  @media (max-width: 640px) { .cta-section { padding: 56px 20px; } }
 
   /* FOOTER */
-  footer { border-top: 1px solid var(--gray2); padding: 32px 48px; display: flex; justify-content: space-between; align-items: center; }
+  footer { border-top: 1px solid var(--gray2); padding: 28px 48px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
   .footer-copy { font-size: 12px; color: var(--muted); }
-  .footer-links { display: flex; gap: 28px; }
-  .footer-links a { font-size: 12px; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+  .footer-links { display: flex; gap: 24px; }
+  .footer-links a { font-size: 12px; color: var(--muted); text-decoration: none; }
   .footer-links a:hover { color: var(--white); }
-`;
+</style>
+</head>
+<body>
 
-function RetainerInquiryForm() {
-  const [form, setForm] = useState({
-    name: '', company: '', email: '', phone: '',
-    challenge: '', spend_range: '', urgency: '', preferred_cadence: ''
-  });
-  const [status, setStatus] = useState(null); // null | 'sending' | 'success' | 'error'
+<div class="demo-banner">DEMO — layout &amp; content only, not wired to the real site</div>
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+<nav class="nav">
+  <a href="#" class="logo">Fuen<span>tiva</span></a>
+  <ul class="nav-links">
+    <li><a href="#domains">Domains</a></li>
+    <li><a href="#coaching">Coaching</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#about">Approach</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="#" class="nav-cta">Client Login</a>
+    <button class="nav-burger" onclick="document.getElementById('navMobile').classList.toggle('open')">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<div class="nav-mobile" id="navMobile">
+  <a href="#domains">Domains</a>
+  <a href="#coaching">Coaching</a>
+  <a href="#pricing">Pricing</a>
+  <a href="#about">Approach</a>
+  <a href="#contact">Contact</a>
+  <a href="#">Client Login</a>
+</div>
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setStatus('sending');
-    try {
-      const res = await fetch(`${BACKEND_URL}/retainer-inquiry`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
-      });
-      if (res.ok) {
-        setStatus('success');
-        setForm({ name: '', company: '', email: '', phone: '', challenge: '', spend_range: '', urgency: '', preferred_cadence: '' });
-      } else {
-        setStatus('error');
-      }
-    } catch (err) {
-      setStatus('error');
-    }
-  };
+<div class="hero-wrap">
+  <section class="hero">
+    <div>
+      <div class="hero-eyebrow">Sourcing, RE, FM & CF Intelligence · AI-Powered</div>
+      <h1>Where deep<br>expertise meets<br><em>AI precision</em></h1>
+      <p class="hero-sub">26 years in sourcing, real estate, facility management, and car fleet — now amplified by AI. Real answers, not generic advice.</p>
+    </div>
+    <div class="ai-panel">
+      <div class="panel-header">
+        <div class="panel-dot" style="background:#FF5500"></div>
+        <div class="panel-dot" style="background:#2E2E2E"></div>
+        <div class="panel-dot" style="background:#2E2E2E"></div>
+        <span class="panel-title">Bojan Šipovac</span>
+      </div>
+      <div class="panel-body">
+        <div class="panel-career-item"><div class="panel-career-year">1998</div><div class="panel-career-role">Mechanical Engineer <span>— career start</span></div></div>
+        <div class="panel-career-item"><div class="panel-career-year">1999–2009</div><div class="panel-career-role">Telekom Srbija <span>— public sourcing</span></div></div>
+        <div class="panel-career-item"><div class="panel-career-year">2010</div><div class="panel-career-role">Key Account Manager <span>— start-up</span></div></div>
+        <div class="panel-career-item"><div class="panel-career-year">2010–2012</div><div class="panel-career-role">Council of Europe <span>— freelance</span></div></div>
+        <div class="panel-career-item"><div class="panel-career-year">2011–2018</div><div class="panel-career-role">Global Sourcing Team <span>— Telenor Group, TPC Singapore</span></div></div>
+        <div class="panel-career-item"><div class="panel-career-year">2015–Present</div><div class="panel-career-role">Director, Sourcing/RE/FM/Fleet <span>— Telenor / Yettel</span></div></div>
+        <div class="panel-career-item"><div class="panel-career-year">2016</div><div class="panel-career-role">Nelt <span>— freelance consultant</span></div></div>
+        <div class="panel-career-item"><div class="panel-career-year">Today</div><div class="panel-career-role">Fuentiva <span>— AI-powered coaching</span></div></div>
+      </div>
+    </div>
+  </section>
 
-  return (
-    <form className="retainer-form" onSubmit={handleSubmit}>
-      <div className="form-row">
-        <div className="form-field">
-          <label>Name *</label>
-          <input type="text" name="name" value={form.name} onChange={handleChange} required />
-        </div>
-        <div className="form-field">
-          <label>Company *</label>
-          <input type="text" name="company" value={form.company} onChange={handleChange} required />
+  <div class="stats-strip">
+    <div class="stat-item"><div class="stat-number">26<span>+</span></div><div class="stat-desc">Years in sourcing &amp; ops</div></div>
+    <div class="stat-item"><div class="stat-number">€<span>2B</span></div><div class="stat-desc">Contracts managed</div></div>
+    <div class="stat-item"><div class="stat-number">7<span>x</span></div><div class="stat-desc">Domains, one expert</div></div>
+    <div class="stat-item"><div class="stat-number">24<span>/7</span></div><div class="stat-desc">AI availability</div></div>
+  </div>
+</div>
+
+<section class="section" id="domains">
+  <div class="section-eyebrow">What I Do</div>
+  <h2 class="section-title">Expert domains.</h2>
+  <div class="services-grid">
+    <div class="service-card"><div class="service-mono">SS</div><div class="service-name">Strategic Sourcing</div><p class="service-desc">Category strategy, RFQ design, vendor evaluation, savings realization.</p></div>
+    <div class="service-card"><div class="service-mono">RE</div><div class="service-name">Real Estate</div><p class="service-desc">Site selection, lease negotiation, portfolio optimization.</p></div>
+    <div class="service-card"><div class="service-mono">FM</div><div class="service-name">Facility Management</div><p class="service-desc">Vendor governance, SLA design, OPEX control.</p></div>
+    <div class="service-card"><div class="service-mono">CF</div><div class="service-name">Car Fleet</div><p class="service-desc">Fleet sourcing, TCO analysis, policy design.</p></div>
+    <div class="service-card"><div class="service-mono">TL</div><div class="service-name">Team Leadership</div><p class="service-desc">Building and scaling teams.</p></div>
+    <div class="service-card"><div class="service-mono">PP</div><div class="service-name">Public Sourcing</div><p class="service-desc">Compliant, efficient public tenders.</p></div>
+    <div class="service-card featured"><div class="service-mono">AI</div><div class="service-name">AI in Sourcing</div><p class="service-desc">Practical AI systems for sourcing teams — deployed, not theoretical.</p></div>
+  </div>
+</section>
+
+<section class="coaching-section" id="coaching">
+  <div class="coaching-inner">
+    <div>
+      <div class="section-eyebrow">How It Works</div>
+      <h2 class="section-title" style="margin-bottom:0">Your sourcing expert. Always on.</h2>
+      <div class="coaching-features">
+        <div class="feature-item"><div class="feature-bullet"></div><div class="feature-text"><strong>AI Coaching, 24/7</strong><p>WhatsApp, text &amp; voice — always in context.</p></div></div>
+        <div class="feature-item"><div class="feature-bullet"></div><div class="feature-text"><strong>Quick Win sessions</strong><p>15–30 min live with Bojan, for decisions that can't wait.</p></div></div>
+        <div class="feature-item"><div class="feature-bullet"></div><div class="feature-text"><strong>For you or your whole team</strong><p>Same expertise, individually or under one company account.</p></div></div>
+      </div>
+    </div>
+    <div class="chat-mockup">
+      <div class="chat-header">
+        <div class="chat-avatar">B</div>
+        <div><div class="chat-name">Bojan · Sourcing Coach</div><div class="chat-status">● Online</div></div>
+      </div>
+      <div class="chat-body">
+        <div><div class="chat-msg bot">Ready for today's session. What's the biggest challenge on your plate right now?</div><div class="chat-time">09:02</div></div>
+        <div style="align-self:flex-end"><div class="chat-msg user">We're renewing a major contract and the vendor is pushing back on our price benchmarks.</div><div class="chat-time" style="text-align:right">09:03</div></div>
+        <div><div class="chat-msg bot">Classic anchor move. Do you have at least 2 alternative quotes in hand? That's your leverage.<span class="cursor"></span></div><div class="chat-time">09:03</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="coaching-cta"><a href="#" class="btn-primary" style="font-size:16px;padding:18px 44px">Let's start</a></div>
+</section>
+
+<section class="section" id="pricing">
+  <div class="section-eyebrow">Pricing</div>
+  <h2 class="section-title" style="margin-bottom:8px">Straightforward pricing.</h2>
+  <p class="vat-note" style="margin:0 0 36px">Prices excl. VAT.</p>
+
+  <div class="pricing-split">
+    <div class="pricing-col">
+      <div class="col-eyebrow">For Individuals</div>
+
+      <div class="price-line">
+        <div class="price-line-left"><strong>AI Coaching</strong><p>Unlimited WhatsApp coaching, text &amp; voice.</p></div>
+        <div class="price-line-right">€99<span>/mo</span></div>
+      </div>
+      <div class="price-line">
+        <div class="price-line-left">
+          <strong>Quick Win Session</strong>
+          <p>Live with Bojan, for decisions that can't wait.</p>
+          <div style="margin-top:10px">
+            <div class="tier-mini"><span>15 min</span><strong>€25</strong></div>
+            <div class="tier-mini"><span>20 min</span><strong>€28</strong></div>
+            <div class="tier-mini"><span>25 min</span><strong>€31</strong></div>
+            <div class="tier-mini"><span>30 min</span><strong>€34</strong></div>
+          </div>
         </div>
       </div>
-      <div className="form-row">
-        <div className="form-field">
-          <label>Email *</label>
-          <input type="email" name="email" value={form.email} onChange={handleChange} required />
-        </div>
-        <div className="form-field">
-          <label>Phone (optional)</label>
-          <input type="tel" name="phone" value={form.phone} onChange={handleChange} />
-        </div>
-      </div>
-      <div className="form-field">
-        <label>What's the challenge you'd like help with? *</label>
-        <textarea name="challenge" value={form.challenge} onChange={handleChange} required placeholder="e.g. our fleet contract renews in 3 months and we're not sure we're getting a fair deal..." />
-      </div>
-      <div className="form-row">
-        <div className="form-field">
-          <label>Approx. annual spend in this area (optional)</label>
-          <select name="spend_range" value={form.spend_range} onChange={handleChange}>
-            <option value="">Prefer not to say</option>
-            <option value="<50k">Under €50k</option>
-            <option value="50-200k">€50k - €200k</option>
-            <option value="200k+">€200k+</option>
-          </select>
-        </div>
-        <div className="form-field">
-          <label>Urgency (optional)</label>
-          <select name="urgency" value={form.urgency} onChange={handleChange}>
-            <option value="">Not sure yet</option>
-            <option value="immediate">Immediate</option>
-            <option value="within_month">Within a month</option>
-            <option value="exploring">Just exploring</option>
-          </select>
+
+      <div class="col-cta"><a href="#" class="btn-primary">Start AI Coaching</a></div>
+    </div>
+
+    <div class="pricing-col b2b">
+      <div class="col-eyebrow">For Teams &amp; Companies</div>
+
+      <div class="price-line">
+        <div class="price-line-left">
+          <strong>Team Subscription</strong>
+          <p>Unlimited AI coaching + live group sessions, one company account.</p>
+          <div style="margin-top:10px">
+            <div class="tier-mini"><span>Starter · up to 5</span><strong>€349/mo</strong></div>
+            <div class="tier-mini"><span>Growth · up to 15</span><strong>€799/mo</strong></div>
+            <div class="tier-mini"><span>Scale · up to 30</span><strong>€1,490/mo</strong></div>
+            <div class="tier-mini"><span>Enterprise · 30+</span><strong>Let's talk</strong></div>
+          </div>
         </div>
       </div>
-      <div className="form-field">
-        <label>Preferred cadence (optional)</label>
-        <select name="preferred_cadence" value={form.preferred_cadence} onChange={handleChange}>
-          <option value="">Not sure — recommend one</option>
-          <option value="standard">Standard (3x/week)</option>
-          <option value="intensive">Intensive (daily)</option>
-        </select>
-      </div>
-      <button type="submit" className="btn-primary form-submit" disabled={status === 'sending'}>
-        {status === 'sending' ? 'Sending...' : 'Send my request'}
-      </button>
-      {status === 'success' && <p className="form-status success">Thanks — check your email shortly for a tailored proposal.</p>}
-      {status === 'error' && <p className="form-status error">Something went wrong. Please try again or email us directly.</p>}
-    </form>
-  );
-}
 
-export default function Home() {
-  return (
-    <>
-      <style>{css}</style>
-
-      {/* NAV */}
-      <nav className="nav">
-        <a href="/" className="logo">Fuen<span>tiva</span></a>
-        <ul className="nav-links">
-          <li><a href="#domains">Expert Domains</a></li>
-          <li><a href="#offers">Offers</a></li>
-          <li><a href="#coaching">Personal Coach</a></li>
-          <li><a href="#company-coaching">Company Coach</a></li>
-          <li><a href="#pricing">Pricing</a></li>
-          <li><a href="#about">About</a></li>
-          <li><a href="#contact">Contact</a></li>
-        </ul>
-        <a href="/login" className="nav-cta">Client Login</a>
-      </nav>
-
-      {/* HERO */}
-      <div className="hero-wrap">
-      <section className="hero">
-        <div>
-          <div className="hero-eyebrow">Procurement Intelligence · AI-Powered</div>
-          <h1>Where deep<br />expertise meets<br /><em>AI precision</em></h1>
-          <p className="hero-sub">26 years of sourcing, facility management, real estate, and car fleet expertise — now amplified by AI. Built for professionals who need real answers, not generic advice.</p>
-          <div className="hero-actions">
-            <a href="#coaching" className="btn-primary">Start AI Coaching</a>
-            <a href="#domains" className="btn-ghost">Explore services</a>
-          </div>
-        </div>
-
-        <div className="ai-panel">
-          <div className="panel-header">
-            <div className="panel-dot" style={{background:'#FF5500'}}></div>
-            <div className="panel-dot" style={{background:'#2E2E2E'}}></div>
-            <div className="panel-dot" style={{background:'#2E2E2E'}}></div>
-            <span className="panel-title">Bojan Šipovac</span>
-          </div>
-          <div className="panel-body">
-            <div className="panel-career-list">
-              <div className="panel-career-item">
-                <div className="panel-career-year">1998</div>
-                <div className="panel-career-role">Mechanical Engineer <span>— career start</span></div>
-              </div>
-              <div className="panel-career-item">
-                <div className="panel-career-year">1999–2009</div>
-                <div className="panel-career-role">Telekom Srbija <span>— public procurement</span></div>
-              </div>
-              <div className="panel-career-item">
-                <div className="panel-career-year">2010</div>
-                <div className="panel-career-role">Key Account Manager <span>— start-up</span></div>
-              </div>
-              <div className="panel-career-item">
-                <div className="panel-career-year">2010–2012</div>
-                <div className="panel-career-role">Council of Europe <span>— freelance</span></div>
-              </div>
-              <div className="panel-career-item">
-                <div className="panel-career-year">2011–2018</div>
-                <div className="panel-career-role">Global Sourcing Team <span>— Telenor Group, TPC Singapore</span></div>
-              </div>
-              <div className="panel-career-item">
-                <div className="panel-career-year">2015–Present</div>
-                <div className="panel-career-role">Director for Sourcing, RE & FM, Car Fleet <span>— Telenor / Yettel</span></div>
-              </div>
-              <div className="panel-career-item">
-                <div className="panel-career-year">2016</div>
-                <div className="panel-career-role">Nelt <span>— freelance sourcing consultant</span></div>
-              </div>
-              <div className="panel-career-item">
-                <div className="panel-career-year">Today</div>
-                <div className="panel-career-role">Fuentiva <span>— AI-powered coaching</span></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* STATS */}
-      <div className="stats-strip">
-        <div className="stat-item"><div className="stat-number">26<span>+</span></div><div className="stat-desc">Years in sourcing & operations</div></div>
-        <div className="stat-item"><div className="stat-number">€<span>2B</span></div><div className="stat-desc">In contracts managed</div></div>
-        <div className="stat-item"><div className="stat-number">7<span>x</span></div><div className="stat-desc">Domains. One integrated view.</div></div>
-        <div className="stat-item"><div className="stat-number">24<span>/7</span></div><div className="stat-desc">AI coaching availability</div></div>
-      </div>
+      <div class="price-line">
+        <div class="price-line-left"><strong>On-site Workshop</strong><p>Half-day (4h) / full-day (8h), built around your team's real challenges.</p></div>
+        <div class="price-line-right">€1,800<span>–€3,200</span></div>
       </div>
 
-      {/* SERVICES */}
-      <section className="section" id="domains">
-        <div className="section-eyebrow">What I Do</div>
-        <h2 className="section-title">Expert Domains</h2>
-        <div className="services-grid">
-          <div className="service-card">
-            <div className="service-icon">⚡</div>
-            <div className="service-name">Strategic Sourcing</div>
-            <p className="service-desc">Category strategy, RFQ design, vendor evaluation frameworks, and savings realization. Built from real telecom-scale experience.</p>
-          </div>
-          <div className="service-card">
-            <div className="service-icon">🏢</div>
-            <div className="service-name">Real Estate</div>
-            <p className="service-desc">Site acquisition, lease negotiation, portfolio optimization. Aligning real estate strategy with business operations at scale.</p>
-          </div>
-          <div className="service-card">
-            <div className="service-icon">🔧</div>
-            <div className="service-name">Facility Management</div>
-            <p className="service-desc">FM strategy, vendor governance, SLA design, and OPEX control. From single sites to multi-country portfolios.</p>
-          </div>
-          <div className="service-card">
-            <div className="service-icon">🚗</div>
-            <div className="service-name">Car Fleet</div>
-            <p className="service-desc">Car Fleet procurement, TCO analysis, policy design, and vendor management. Optimizing cost and compliance across your vehicle assets.</p>
-          </div>
-          <div className="service-card">
-            <div className="service-icon">👥</div>
-            <div className="service-name">Team Leadership & Management</div>
-            <p className="service-desc">Building and scaling procurement teams. Organizational design, KPI frameworks, coaching managers to lead with clarity and results.</p>
-          </div>
-          <div className="service-card">
-            <div className="service-icon">🏛️</div>
-            <div className="service-name">Public Procurement</div>
-            <p className="service-desc">Deep expertise in public tender processes from Telekom Srbija. Compliance, strategy, and efficiency in regulated procurement environments.</p>
-          </div>
-          <div className="service-card featured">
-            <div className="service-icon">🤖</div>
-            <div className="service-name">AI in Procurement</div>
-            <p className="service-desc">Practical AI implementation for sourcing teams — from automated RFQ analysis to AI coaching agents. Not theory. Deployed systems that work in the real world of enterprise procurement.</p>
-          </div>
-        </div>
-      </section>
-
-      <section className="section" id="offers">
-        <div className="section-eyebrow">Offers</div>
-        <h2 className="section-title">Two ways to work with Fuentiva.</h2>
-        <div className="services-split">
-
-          <div className="services-col">
-            <div className="col-eyebrow">For Individuals</div>
-            <div className="col-heading">Personal Coaching</div>
-            <p className="col-desc">AI coaching 24/7, or live Quick Win sessions with Bojan — across sourcing, real estate, facility management, team leadership, and car fleet.</p>
-
-            <div className="mini-service">
-              <div className="mini-icon">🤖</div>
-              <div>
-                <div className="mini-name">AI Coaching — 99€/month</div>
-                <div className="mini-desc">Unlimited text & voice coaching via WhatsApp.</div>
+      <div class="price-line">
+        <div class="price-line-left">
+          <strong>Sourcing Retainer</strong>
+          <p>Dedicated senior sourcing support, fixed weekly schedule, 2-month minimum.</p>
+          <button class="retainer-toggle" onclick="document.getElementById('retainerPanel').classList.toggle('open')">Get a tailored quote</button>
+          <div class="retainer-panel" id="retainerPanel">
+            <div class="retainer-form">
+              <div class="form-row">
+                <div class="form-field"><label>Name</label><input type="text"></div>
+                <div class="form-field"><label>Company</label><input type="text"></div>
               </div>
-            </div>
-            <div className="mini-service">
-              <div className="mini-icon">⚡</div>
-              <div>
-                <div className="mini-name">Quick Win Sessions — from 25€</div>
-                <div className="mini-desc">15–30 min live with Bojan, for decisions that need real expertise, fast.</div>
+              <div class="form-row">
+                <div class="form-field"><label>Email</label><input type="email"></div>
+                <div class="form-field"><label>Phone (optional)</label><input type="tel"></div>
               </div>
-            </div>
-            <div className="mini-service">
-              <div className="mini-icon">📋</div>
-              <div>
-                <div className="mini-name">7 domains, one expert</div>
-                <div className="mini-desc">Sourcing, RE, FM, Car Fleet, Team Leadership, Public Procurement, AI implementation.</div>
-              </div>
-            </div>
-
-            <div className="col-cta"><a href="#coaching" className="btn-primary">Start AI Coaching</a></div>
-          </div>
-
-          <div className="services-col b2b">
-            <div className="col-eyebrow">For Teams & Companies</div>
-            <div className="col-heading">Corporate Programs</div>
-            <p className="col-desc">Bring Fuentiva's expertise to your whole team — flat-rate coaching access, or a live training session for a specific topic.</p>
-
-            <div className="offer-card">
-              <div className="offer-name">Team Subscription</div>
-              <div className="offer-price">Flat rate — priced by team size</div>
-              <div className="offer-desc">Give your whole procurement, RE/FM, or fleet team ongoing access to AI coaching, under one company account.</div>
-            </div>
-            <div className="offer-card">
-              <div className="offer-name">Corporate Training</div>
-              <div className="offer-price">Priced per engagement</div>
-              <div className="offer-desc">A live 30-minute session with Bojan for your team — team leadership, negotiation, or any of the 5 core domains.</div>
-            </div>
-            <div className="offer-card">
-              <div className="offer-name">Sourcing Retainer</div>
-              <div className="offer-price">From €3,000 — 2-month minimum</div>
-              <div className="offer-desc">Dedicated, senior sourcing support on a fixed weekly schedule. <a href="#retainer-inquiry" style={{color:'var(--orange)', textDecoration:'none'}}>Tell us what you need →</a></div>
-            </div>
-
-            <div className="col-cta"><a href="#company-coaching" className="btn-primary">Start Corporate Session</a></div>
-          </div>
-
-        </div>
-      </section>
-
-      {/* COACHING */}
-      <section className="coaching-section" id="coaching">
-        <div className="coaching-inner">
-          <div>
-            <div className="section-eyebrow">Personal Coach</div>
-            <h2 className="section-title" style={{marginBottom:0}}>Your personal procurement expert. Always available.</h2>
-            <div className="coaching-features">
-              <div className="feature-item">
-                <div className="feature-bullet"></div>
-                <div className="feature-text">
-                  <strong>AI Coaching — 24/7</strong>
-                  <p>Async sessions via WhatsApp. The AI knows your context, your goals, your history. Voice and text supported.</p>
-                </div>
-              </div>
-              <div className="feature-item">
-                <div className="feature-bullet"></div>
-                <div className="feature-text">
-                  <strong>Quick Win Sessions — Live with Bojan</strong>
-                  <p>15–30 min live chat directly with me. For complex decisions that need real expertise, fast. Premium rate applies.</p>
-                </div>
-              </div>
-              <div className="feature-item">
-                <div className="feature-bullet"></div>
-                <div className="feature-text">
-                  <strong>Personalized to your situation</strong>
-                  <p>Every session builds on the last. Your challenges, your industry, your goals — always in context.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="chat-mockup">
-            <div className="chat-header">
-              <div className="chat-avatar">B</div>
-              <div>
-                <div className="chat-name">Bojan · Sourcing Coach</div>
-                <div className="chat-status">● Online</div>
-              </div>
-            </div>
-            <div className="chat-body">
-              <div>
-                <div className="chat-msg bot">Ready for today's session. What's the biggest sourcing challenge on your plate right now?</div>
-                <div className="chat-time">09:02</div>
-              </div>
-              <div style={{alignSelf:'flex-end'}}>
-                <div className="chat-msg user">We're renewing a major IT contract and the vendor is pushing back on our price benchmarks.</div>
-                <div className="chat-time" style={{textAlign:'right'}}>09:03</div>
-              </div>
-              <div>
-                <div className="chat-msg bot">Classic anchor move. Before their next call — do you have at least 2 alternative quotes in hand, even informal ones? That's your leverage.<span className="cursor"></span></div>
-                <div className="chat-time">09:03</div>
-              </div>
+              <div class="form-field"><label>What's the challenge?</label><textarea></textarea></div>
+              <button class="btn-primary" style="align-self:flex-start">Send request</button>
             </div>
           </div>
         </div>
-        <div style={{textAlign: 'center', marginTop: '56px'}}>
-          <a href="/login" className="btn-primary" style={{fontSize: '18px', padding: '20px 52px'}}>Let's start</a>
-        </div>
-      </section>
+        <div class="price-line-right">€3,000<span>–€5,000</span></div>
+      </div>
 
-      {/* COMPANY COACH */}
-      <section className="coaching-section" id="company-coaching">
-        <div className="coaching-inner">
-          <div>
-            <div className="section-eyebrow">Company Coach</div>
-            <h2 className="section-title" style={{marginBottom:0}}>Give your whole team access to expert guidance.</h2>
-            <div className="coaching-features">
-              <div className="feature-item">
-                <div className="feature-bullet"></div>
-                <div className="feature-text">
-                  <strong>Team-wide AI Coaching</strong>
-                  <p>Every employee gets 24/7 access to the same AI coaching, under one company account.</p>
-                </div>
-              </div>
-              <div className="feature-item">
-                <div className="feature-bullet"></div>
-                <div className="feature-text">
-                  <strong>Corporate Training Sessions</strong>
-                  <p>A live 30-minute session with Bojan for your team — team leadership, negotiation, or any of the 5 core domains.</p>
-                </div>
-              </div>
-              <div className="feature-item">
-                <div className="feature-bullet"></div>
-                <div className="feature-text">
-                  <strong>One consistent standard</strong>
-                  <p>The same expertise and approach applied across your whole organization — not fragmented, one-off advice.</p>
-                </div>
-              </div>
-            </div>
-          </div>
+      <div class="price-line">
+        <div class="price-line-left"><strong>Automation Scripts</strong><p>A custom script or bot for one specific manual task — delivered as ready-to-use files.</p></div>
+        <div class="price-line-right">from €750</div>
+      </div>
 
-          <div className="chat-mockup">
-            <div className="chat-header">
-              <div className="chat-avatar">B</div>
-              <div>
-                <div className="chat-name">Bojan · Company Coach</div>
-                <div className="chat-status">● Online</div>
-              </div>
-            </div>
-            <div className="chat-body">
-              <div>
-                <div className="chat-msg bot">Ready for your team's session. Which of the 5 domains should we focus on today?</div>
-                <div className="chat-time">09:02</div>
-              </div>
-              <div style={{alignSelf:'flex-end'}}>
-                <div className="chat-msg user">Our facility management team keeps missing SLA targets with our cleaning vendor.</div>
-                <div className="chat-time" style={{textAlign:'right'}}>09:03</div>
-              </div>
-              <div>
-                <div className="chat-msg bot">Before renewing, pull the last two quarters of SLA breach data — that's your leverage in the vendor conversation.<span className="cursor"></span></div>
-                <div className="chat-time">09:03</div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div style={{textAlign: 'center', marginTop: '56px'}}>
-          <a href="/login" className="btn-primary" style={{fontSize: '18px', padding: '20px 52px'}}>Let's start</a>
-        </div>
-      </section>
+      <div class="col-cta"><a href="#" class="btn-primary">Book a scoping call</a></div>
+    </div>
+  </div>
+</section>
 
-      {/* PRICING (Corporate) */}
-      <section className="section" id="pricing">
-        <div className="section-eyebrow">Corporate Pricing</div>
-        <h2 className="section-title">Pricing for teams & companies.</h2>
+<section class="about-section" id="about">
+  <div class="about-name">How I Work</div>
+  <p class="about-bio">Flexibility, integrity, concreteness. Real risks, weighed openly — no dressing up, no generic frameworks.</p>
+</section>
 
-        <div className="pricing-grid">
-          <div className="price-card">
-            <div className="price-tier">Starter</div>
-            <div className="price-size">up to 5 users</div>
-            <div className="price-amount">€349<span> /mo</span></div>
-            <ul className="price-feat">
-              <li>Unlimited AI coaching, 24/7</li>
-              <li>1 live group session / month</li>
-              <li>One company account</li>
-            </ul>
-            <a href="#contact" className="price-cta">Book a scoping call</a>
-          </div>
-          <div className="price-card featured">
-            <div className="price-tier">Growth</div>
-            <div className="price-size">up to 15 users</div>
-            <div className="price-amount">€799<span> /mo</span></div>
-            <ul className="price-feat">
-              <li>Unlimited AI coaching, 24/7</li>
-              <li>2 live group sessions / month</li>
-              <li>One company account</li>
-            </ul>
-            <a href="#contact" className="price-cta">Book a scoping call</a>
-          </div>
-          <div className="price-card">
-            <div className="price-tier">Scale</div>
-            <div className="price-size">up to 30 users</div>
-            <div className="price-amount">€1,490<span> /mo</span></div>
-            <ul className="price-feat">
-              <li>Unlimited AI coaching, 24/7</li>
-              <li>4 live group sessions / month</li>
-              <li>One company account</li>
-            </ul>
-            <a href="#contact" className="price-cta">Book a scoping call</a>
-          </div>
-          <div className="price-card">
-            <div className="price-tier">Enterprise</div>
-            <div className="price-size">30+ users</div>
-            <div className="price-amount">Let's talk</div>
-            <ul className="price-feat">
-              <li>Everything in Scale</li>
-              <li>Custom live session volume</li>
-              <li>Tailored to your organization</li>
-            </ul>
-            <a href="#contact" className="price-cta">Book a scoping call</a>
-          </div>
-        </div>
-        <p className="pricing-note">Annual plans — 2 months free. All prices exclude VAT.</p>
+<section class="cta-section" id="contact">
+  <h2>Ready to upgrade<br>your current skills?</h2>
+  <p>Book a free 15-minute call — we'll pinpoint where you (or your team) are stuck and whether coaching is the right fit. No pitch, no obligation.</p>
+  <a href="#" class="btn-primary" style="font-size:15px;padding:16px 36px">Book intro call →</a>
+</section>
 
-        <div className="workshop-block">
-          <div className="workshop-intro">
-            <div className="col-eyebrow">On-site</div>
-            <h3>On-site Workshop</h3>
-            <p>A hands-on session at your offices, built around your team's real challenges — sourcing, facility management, team leadership, negotiation, or fleet.</p>
-          </div>
-          <div className="workshop-prices">
-            <div className="wp-row"><span>Half-day (4h), on-site</span><strong>from €1,800</strong></div>
-            <div className="wp-row"><span>Full-day (8h), on-site</span><strong>from €3,200</strong></div>
-            <div className="wp-meta">Tailored to your case · Travel billed separately · Excl. VAT</div>
-            <a href="#contact" className="price-cta">Book a scoping call</a>
-          </div>
-        </div>
-      </section>
+<footer>
+  <div class="footer-copy">© 2026 Fuentiva. All rights reserved.</div>
+  <div class="footer-links">
+    <a href="#">Privacy</a>
+    <a href="#">LinkedIn</a>
+    <a href="#">fuentiva.es</a>
+  </div>
+</footer>
 
-      {/* SOURCING RETAINER INQUIRY */}
-      <section className="section" id="retainer-inquiry">
-        <div className="section-eyebrow">Sourcing Retainer</div>
-        <h2 className="section-title">Tell us what you need.</h2>
-        <div className="retainer-intro">
-          <p>Describe your sourcing challenge below and we'll come back with a tailored proposal — which tier fits, and why — sent straight to your inbox.</p>
-        </div>
-        <RetainerInquiryForm />
-      </section>
-
-      {/* ABOUT */}
-      <section className="about-section" id="about">
-        <div>
-          <div className="about-name">Bojan Šipovac</div>
-          <div className="about-title">26 years, built step by step.</div>
-        </div>
-        <div className="milestone-list">
-          <div className="milestone-item">
-            <div className="milestone-year">1998</div>
-            <div className="milestone-role">Mechanical Engineer <span>— career start</span></div>
-          </div>
-          <div className="milestone-item">
-            <div className="milestone-year">1999–2009</div>
-            <div className="milestone-role">Telekom Srbija <span>— public procurement</span></div>
-          </div>
-          <div className="milestone-item">
-            <div className="milestone-year">2010</div>
-            <div className="milestone-role">Key Account Manager <span>— start-up, 5 major clients</span></div>
-          </div>
-          <div className="milestone-item">
-            <div className="milestone-year">2010–2012</div>
-            <div className="milestone-role">Council of Europe <span>— freelance</span></div>
-          </div>
-          <div className="milestone-item">
-            <div className="milestone-year">2010–Present</div>
-            <div className="milestone-role">Yettel <span>— formerly Telenor</span></div>
-          </div>
-          <div className="milestone-item">
-            <div className="milestone-year">2011–2018</div>
-            <div className="milestone-role">Global Sourcing Team <span>— Telenor Group, TPC Singapore</span></div>
-          </div>
-          <div className="milestone-item">
-            <div className="milestone-year">2015–Present</div>
-            <div className="milestone-role">Director, Sourcing/RE/FM/Car Fleet <span>— Telenor / Yettel</span></div>
-          </div>
-          <div className="milestone-item">
-            <div className="milestone-year">2016</div>
-            <div className="milestone-role">Nelt <span>— freelance sourcing consultant</span></div>
-          </div>
-        </div>
-      </section>
-
-
-      {/* CTA */}
-      <section className="cta-section" id="contact">
-        <h2>Ready to upgrade<br />your current skills?</h2>
-        <p>Book a free 15-minute call — we'll pinpoint where you (or your team) are stuck and whether coaching is the right fit. No pitch, no obligation.</p>
-        <a href="https://calendly.com/bojan-sipovac/intro-call-15-min" target="_blank" rel="noreferrer" className="btn-primary" style={{fontSize:'15px', padding:'16px 36px'}}>Book intro call →</a>
-        <p style={{fontSize:'13px', color:'var(--muted)', marginTop:'24px', marginBottom:0}}>Have a specific problem to solve right now? A <a href="#offers" style={{color:'var(--orange)', textDecoration:'none'}}>paid Quick Win session</a> is the faster route.</p>
-      </section>
-
-      {/* FOOTER */}
-      <footer>
-        <div className="footer-copy">© 2026 Fuentiva. All rights reserved.</div>
-        <div className="footer-links">
-          <a href="#">Privacy</a>
-          <a href="#">LinkedIn</a>
-          <a href="#">fuentiva.es</a>
-        </div>
-      </footer>
-    </>
-  );
-}
+</body>
+</html>
