@@ -159,21 +159,21 @@ const css = `
   }
 
   /* PRICING — CARD GRID */
-  .pricing-group { margin-bottom: 10px; }
+  .pricing-group { margin-bottom: 18px; }
   .pricing-group:last-child { margin-bottom: 0; }
   .pricing-group-label { font-size: 10.5px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
 
   .pricing-cards-b2c { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--gray2); border: 1px solid var(--gray2); }
   .pricing-cards-b2b { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--gray2); border: 1px solid var(--gray2); }
-  .pricing-card { background: var(--black); padding: 10px 14px; display: flex; flex-direction: column; }
+  .pricing-card { background: var(--black); padding: 13px 15px; display: flex; flex-direction: column; }
   .pricing-card.b2b { background: var(--gray1); }
-  .pricing-card-name { font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 600; margin-bottom: 2px; }
-  .pricing-card-desc { font-size: 10.5px; color: var(--muted); line-height: 1.3; margin-bottom: 5px; }
-  .pricing-card-price { font-family: 'Space Grotesk', sans-serif; font-size: 16px; font-weight: 700; color: var(--orange); margin-top: auto; }
+  .pricing-card-name { font-family: 'Space Grotesk', sans-serif; font-size: 13.5px; font-weight: 600; margin-bottom: 3px; }
+  .pricing-card-desc { font-size: 11.5px; color: var(--muted); line-height: 1.4; margin-bottom: 8px; }
+  .pricing-card-price { font-family: 'Space Grotesk', sans-serif; font-size: 17px; font-weight: 700; color: var(--orange); margin-top: auto; }
   .pricing-card-price span { display: block; font-size: 10px; font-weight: 500; color: var(--muted); margin-top: 2px; }
 
   .tier-list { display: flex; flex-direction: column; gap: 3px; margin-top: auto; }
-  .tier-mini { display: flex; justify-content: space-between; font-size: 10.5px; padding: 1px 0; color: var(--light); }
+  .tier-mini { display: flex; justify-content: space-between; font-size: 11px; padding: 2px 0; color: var(--light); }
   .tier-mini strong { color: var(--white); font-weight: 600; }
 
   /* Retainer accordion */
@@ -182,9 +182,9 @@ const css = `
   .retainer-panel-wrap { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
   .retainer-panel-wrap.open { max-height: 900px; margin-top: 18px; }
 
-  .pricing-cta-wrap { text-align: center; margin-top: 8px; }
+  .pricing-cta-wrap { text-align: center; margin-top: 16px; }
 
-  .vat-note { font-size: 11px; color: var(--muted); margin: 0 0 10px; }
+  .vat-note { font-size: 11px; color: var(--muted); margin: 0 0 18px; }
 
   @media (max-width: 1000px) { .pricing-cards-b2b { grid-template-columns: repeat(2, 1fr); } }
   @media (max-width: 640px) {
@@ -209,12 +209,12 @@ const css = `
   .form-status.error { color: var(--orange); }
   @media (max-width: 640px) { .form-row { grid-template-columns: 1fr; } }
 
-  #pricing { padding: 12px 48px 10px; }
+  #pricing { padding: 18px 48px 20px; }
   #pricing .section-title { margin-bottom: 4px !important; }
-  #pricing .section-eyebrow { margin-bottom: 6px; }
+  #pricing .section-eyebrow { margin-bottom: 8px; }
 
   /* ABOUT — "How I Work" */
-  .about-section { padding: 56px 48px; display: flex; align-items: baseline; gap: 40px; flex-wrap: wrap; border-top: 1px solid var(--gray2); }
+  .about-section { padding: 64px 48px; display: flex; align-items: baseline; gap: 40px; flex-wrap: wrap; border-top: 1px solid var(--gray2); }
   .about-name { font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 700; letter-spacing: -0.5px; white-space: nowrap; }
   .about-bio { font-size: 13.5px; color: var(--muted); line-height: 1.65; max-width: 620px; }
   @media (max-width: 640px) { .about-section { padding: 40px 20px; } }
