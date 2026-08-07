@@ -328,9 +328,96 @@ function RetainerInquiryForm() {
   );
 }
 
+function AutomationInquiryForm() {
+  const [form, setForm] = useState({
+    name: '', company: '', email: '', phone: '',
+    task_description: '', frequency: '', source_format: '', destination_format: ''
+  });
+  const [status, setStatus] = useState(null); // null | 'sending' | 'success' | 'error'
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setStatus('sending');
+    try {
+      const res = await fetch(`${BACKEND_URL}/automation-inquiry`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      });
+      if (res.ok) {
+        setStatus('success');
+        setForm({ name: '', company: '', email: '', phone: '', task_description: '', frequency: '', source_format: '', destination_format: '' });
+      } else {
+        setStatus('error');
+      }
+    } catch (err) {
+      setStatus('error');
+    }
+  };
+
+  return (
+    <form className="retainer-form" onSubmit={handleSubmit}>
+      <div className="form-row">
+        <div className="form-field">
+          <label>Name *</label>
+          <input type="text" name="name" value={form.name} onChange={handleChange} required />
+        </div>
+        <div className="form-field">
+          <label>Company (optional)</label>
+          <input type="text" name="company" value={form.company} onChange={handleChange} />
+        </div>
+      </div>
+      <div className="form-row">
+        <div className="form-field">
+          <label>Email *</label>
+          <input type="email" name="email" value={form.email} onChange={handleChange} required />
+        </div>
+        <div className="form-field">
+          <label>Phone (optional)</label>
+          <input type="tel" name="phone" value={form.phone} onChange={handleChange} />
+        </div>
+      </div>
+      <div className="form-field">
+        <label>What task should this automate? *</label>
+        <textarea name="task_description" value={form.task_description} onChange={handleChange} required placeholder="e.g. transfer data from our supplier invoices (PDF) into an Excel tracker every month..." />
+      </div>
+      <div className="form-row">
+        <div className="form-field">
+          <label>How often does this need to run? (optional)</label>
+          <select name="frequency" value={form.frequency} onChange={handleChange}>
+            <option value="">Not sure yet</option>
+            <option value="one_time">One-time</option>
+            <option value="weekly">Weekly</option>
+            <option value="monthly">Monthly</option>
+            <option value="other">Other / irregular</option>
+          </select>
+        </div>
+        <div className="form-field">
+          <label>Source format (optional)</label>
+          <input type="text" name="source_format" value={form.source_format} onChange={handleChange} placeholder="e.g. PDF invoices" />
+        </div>
+      </div>
+      <div className="form-field">
+        <label>Where should the output go? (optional)</label>
+        <input type="text" name="destination_format" value={form.destination_format} onChange={handleChange} placeholder="e.g. Excel spreadsheet" />
+      </div>
+      <button type="submit" className="btn-primary form-submit" disabled={status === 'sending'}>
+        {status === 'sending' ? 'Sending...' : 'Send my request'}
+      </button>
+      {status === 'success' && <p className="form-status success">Thanks — check your email shortly.</p>}
+      {status === 'error' && <p className="form-status error">Something went wrong. Please try again or email us directly.</p>}
+    </form>
+  );
+}
+
 export default function Home() {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [retainerOpen, setRetainerOpen] = useState(false);
+  const [automationOpen, setAutomationOpen] = useState(false);
 
   return (
     <>
@@ -499,11 +586,18 @@ export default function Home() {
               <div className="pricing-card-name">Automation Scripts</div>
               <p className="pricing-card-desc">A custom script or bot for one specific manual task — delivered as ready-to-use files.</p>
               <div className="pricing-card-price">from €750</div>
+              <button type="button" className="retainer-toggle" onClick={() => setAutomationOpen(!automationOpen)}>
+                {automationOpen ? 'Hide form' : 'Describe your task'}
+              </button>
             </div>
           </div>
 
           <div className={`retainer-panel-wrap${retainerOpen ? ' open' : ''}`}>
             <RetainerInquiryForm />
+          </div>
+
+          <div className={`retainer-panel-wrap${automationOpen ? ' open' : ''}`}>
+            <AutomationInquiryForm />
           </div>
 
           <div className="pricing-cta-wrap"><a href="#contact" className="btn-primary">Book a scoping call</a></div>
