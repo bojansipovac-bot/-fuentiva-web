@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 // Real Railway backend URL used for Stripe checkout / Retainer intake / other API calls
 const BACKEND_URL = 'https://procurement-coach-production.up.railway.app';
@@ -418,6 +418,20 @@ export default function Home() {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [retainerOpen, setRetainerOpen] = useState(false);
   const [automationOpen, setAutomationOpen] = useState(false);
+  const retainerPanelRef = useRef(null);
+  const automationPanelRef = useRef(null);
+
+  useEffect(() => {
+    if (retainerOpen && retainerPanelRef.current) {
+      retainerPanelRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [retainerOpen]);
+
+  useEffect(() => {
+    if (automationOpen && automationPanelRef.current) {
+      automationPanelRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [automationOpen]);
 
   return (
     <>
@@ -592,11 +606,11 @@ export default function Home() {
             </div>
           </div>
 
-          <div className={`retainer-panel-wrap${retainerOpen ? ' open' : ''}`}>
+          <div ref={retainerPanelRef} className={`retainer-panel-wrap${retainerOpen ? ' open' : ''}`}>
             <RetainerInquiryForm />
           </div>
 
-          <div className={`retainer-panel-wrap${automationOpen ? ' open' : ''}`}>
+          <div ref={automationPanelRef} className={`retainer-panel-wrap${automationOpen ? ' open' : ''}`}>
             <AutomationInquiryForm />
           </div>
 
